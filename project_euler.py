@@ -1074,7 +1074,6 @@ def p50():
   # print OPT
   print "Done. Max_prime is %d" % max_prime
 
-# solved but not submitted
 def p53():
   cnt = 0
   for n in xrange(1, 101):
@@ -1086,7 +1085,6 @@ def p53():
           cnt += 2
   print cnt
 
-# solved but not submitted 
 def p55():
   def is_lychrel(n):
     def reverse(n):
@@ -1113,7 +1111,6 @@ def p55():
   print "Number of Lychrel Numbers in the range {1, 10,000} : %d" % num_lychrel
   # print is_lychrel(4994)
 
-# solved but not submitted
 def p56():
   greatest_sum = 0
   for a in xrange(2, 100):
@@ -1227,7 +1224,6 @@ def p81():
   print OPT[len(OPT) - 1][len(OPT) - 1]
   # print OPT[0][0]
 
-# solved but not submitted
 def p92():
   seen_numbers = {}
   cnt_89 = 0
@@ -1249,7 +1245,7 @@ def p92():
 ##############################################################################
 t1 = time.time()
 
-p72()
+p92()
 
 print "<Finished in " + str(time.time() - t1) + " seconds.>"
 
