@@ -1224,6 +1224,7 @@ def p81():
   print OPT[len(OPT) - 1][len(OPT) - 1]
   # print OPT[0][0]
 
+# time: 112.4 seconds
 def p92():
   seen_numbers = {}
   cnt_89 = 0
