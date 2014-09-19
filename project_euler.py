@@ -886,6 +886,83 @@ def p40():
   z = n.rep
   print z[1 - 1] * z[10 - 1] * z[100 - 1] * z[1000 - 1] * z[10000 - 1] * z[100000 - 1] *z[1000000 - 1]
 
+# unsolved
+def p41():
+  def is_ascending(arr):
+    def f(arr, prev):
+      if arr == []:
+        return True
+      else:
+        return arr[0] >= prev and f(arr[1:], arr[0])
+    return len(arr) <= 1 or f(arr[1:], arr[0])
+  def is_descending(arr):
+    def f(arr, prev):
+      if arr == []:
+        return True
+      else:
+        return arr[0] <= prev and f(arr[1:], arr[0])
+    return len(arr) <= 1 or f(arr[1:], arr[0])
+
+  def breakpoint(arr):
+    i = 1
+    iter = arr[0]
+    for elem in arr[1:]:
+      if elem > iter:
+        break
+      i += 1
+      iter = elem
+    return i
+
+  def make_pandigit(n):
+    s = ""
+    for i in xrange(1, n+1):
+      s += str(i)
+    return int(s)
+
+  class Pandigital(Number):
+    def swap(self, a1, a2):
+      t = self.rep[a1]
+      self.rep[a1] = self.rep[a2]
+      self.rep[a2] = t 
+    def find_next_largest_number(self):
+      def find_min(arr, v):
+        x = arr[0]
+        for i in arr:
+          if i < x and i > v:
+            x = i
+        return x
+      size = len(self.rep)
+      if is_descending(self.rep):
+        raise Exception("no next largest number!")
+      elif is_ascending(self.rep):
+        self.swap(size - 2, size - 1)
+      else:
+        # find breakpoint
+        b_point = breakpoint(self.rep)
+        left_side = self.rep[:b_point]
+        right_side = self.rep[b_point:]
+        index_min = right_side.index(find_min(right_side, left_side[-1])) + len(left_side)
+        self.swap(index_min, len(left_side) - 1)
+        right_side = sorted(self.rep[b_point:])
+        self.rep = self.rep[:b_point] + right_side        
+
+  for n in xrange(9, 0, -1):
+    current_pan = Pandigital(make_pandigit(n))
+    in_order_pans = []
+    while True:
+      in_order_pans.insert(0, current_pan.to_int())
+      try:
+        current_pan.find_next_largest_number()
+      except Exception, e:
+        # print "excepted"
+        break
+
+    for i in in_order_pans:
+      # print i
+      if is_prime(i):
+        print i
+        break
+      
 def p42():
   input = open("words.txt")
   s = input.read()
@@ -1085,6 +1162,201 @@ def p53():
           cnt += 2
   print cnt
 
+# time: 0.065 seconds
+def p54():
+  ROYAL_FLUSH     = 9
+  STRAIGHT_FLUSH  = 8
+  FOUR_OF_A_KIND  = 7
+  FULL_HOUSE      = 6
+  FLUSH           = 5
+  STRAIGHT        = 4
+  THREE_OF_A_KIND = 3
+  TWO_PAIRS       = 2
+  ONE_PAIR        = 1
+  HIGH_CARD       = 0
+
+  # `hand` is array as described by the problem statement
+  def determine_hand(hand):
+    def check_dups(hand):
+      h = list(set(hand))
+      h_dict = {}
+      for i in hand:
+        if not i in h_dict:
+          h_dict[i] = 1
+        else:
+          h_dict[i] += 1
+      dups = sorted(h_dict.values(), reverse=True)
+      if dups[0] ==  4:
+        return FOUR_OF_A_KIND
+      elif dups[0] == 3:
+        if dups[1] == 2:
+          return FULL_HOUSE
+        else:
+          return THREE_OF_A_KIND
+      elif dups[0] == 2:
+        if dups[1] == 2:
+          return TWO_PAIRS
+        else:
+          return ONE_PAIR
+      else:
+        return HIGH_CARD
+    def is_flush(hand):
+      suit = hand[0]
+      for i in hand:
+        if i != suit:
+          return False
+      return True
+    def is_straight(hand):
+      h = sorted(list(set(hand)))
+      if len(h) != 5:
+        return False
+      elif h[-1] - h[0] == 4:
+        return True
+      elif h[len(h) - 1] == 14 and h[:-1] == [2, 3, 4, 5]:
+        return True
+      else:
+        return False
+
+    c1 = hand[0]
+    c2 = hand[1]
+    c3 = hand[2]
+    c4 = hand[3]
+    c5 = hand[4]
+    hand_values = [c1[0], c2[0], c3[0], c4[0], c5[0]]
+    hand_values = map(lambda x: x if not(x in {"T": "10", "J": "11", "Q":"12", "K":"13", "A":"14"}) else {"T": "10", "J": "11", "Q":"12", "K":"13", "A":"14"}[x],hand_values)
+    hand_values = sorted(map(lambda x: int(x), hand_values))
+    hand_suits  = [c1[1], c2[1], c3[1], c4[1], c5[1]]
+
+    hand_is_flush = is_flush(hand_suits)
+    hand_is_straight = is_straight(hand_values)
+    
+    if hand_is_flush:
+      if hand_is_straight:
+        if hand_values[-1] == "14": # check high card
+          return ROYAL_FLUSH
+        else:
+          return STRAIGHT_FLUSH
+      else:
+        return FLUSH
+    elif hand_is_straight:
+      return STRAIGHT
+    else:
+      return check_dups(hand_values)
+  
+  # returns True if hand1 wins over hand2
+  def tiebreak(hand1, hand2, v):
+    c1 = hand1[0]
+    c2 = hand1[1]
+    c3 = hand1[2]
+    c4 = hand1[3]
+    c5 = hand1[4]
+    hand1_vs = [c1[0], c2[0], c3[0], c4[0], c5[0]]
+    hand1_vs = map(lambda x: x if not(x in {"T": "10", "J": "11", "Q":"12", "K":"13", "A":"14"}) else {"T": "10", "J": "11", "Q":"12", "K":"13", "A":"14"}[x],hand1_vs)
+    hand1_vs = sorted(map(lambda x: int(x), hand1_vs), reverse=True)
+    hand1_suits  = [c1[1], c2[1], c3[1], c4[1], c5[1]]
+    c1 = hand2[0]
+    c2 = hand2[1]
+    c3 = hand2[2]
+    c4 = hand2[3]
+    c5 = hand2[4]
+    hand2_vs = [c1[0], c2[0], c3[0], c4[0], c5[0]]
+    hand2_vs = map(lambda x: x if not(x in {"T": "10", "J": "11", "Q":"12", "K":"13", "A":"14"}) else {"T": "10", "J": "11", "Q":"12", "K":"13", "A":"14"}[x],hand2_vs)
+    hand2_vs = sorted(map(lambda x: int(x), hand2_vs), reverse=True)
+    hand2_suits  = [c1[1], c2[1], c3[1], c4[1], c5[1]]
+    case1 = [HIGH_CARD, STRAIGHT, FLUSH, STRAIGHT_FLUSH]
+    if v in case1:
+      if v == STRAIGHT_FLUSH or v == STRAIGHT:
+        hand1_vs = [x for x in hand1_vs if x != 14]
+        hand2_vs = [x for x in hand2_vs if x != 14]
+      for i in xrange(5):
+        if hand1_vs[i] == hand2_vs:
+          continue
+        else:
+          return hand1_vs > hand2_vs
+      raise Exception("No high card found.")
+    else: 
+      h1_dict = {}
+      h2_dict = {}
+      for i in xrange(5):
+        if hand1_vs[i] in h1_dict:
+          h1_dict[hand1_vs[i]] += 1
+        else:
+          h1_dict[hand1_vs[i]] = 1
+        if hand2_vs[i] in h2_dict:
+          h2_dict[hand2_vs[i]] += 1
+        else:
+          h2_dict[hand2_vs[i]] = 1
+
+      if v == TWO_PAIRS:
+        l1 = []
+        l1_ps = []
+        l2 = []
+        l2_ps = []
+        for k,v in h1_dict.items():
+          if v == 2:
+            l1_ps.append(k)
+          else:
+            l1.append(k)
+        for k, v in h2_dict.items():
+          if v == 2:
+            l2_ps.append(k)
+          else:
+            l2.append(k)
+        l1_ps = sorted(list(set(l1_ps)))
+        l2_ps = sorted(list(set(l2_ps)))
+        l1 = sorted(l1)
+        l2 = sorted(l2)
+        for i in xrange(len(l1_ps)):
+          if l1_ps[i] == l2_ps[i]:
+            continue
+          else:
+            return l1_ps[i] > l2_ps[i]
+        for i in xrange(len(l1)):
+          if l1[i] == l2[i]:
+            continue
+          else:
+            return l1[i] > l2[i]
+      else:
+        h1_dict = {v:k for k, v in h1_dict.items()}
+        h2_dict = {v:k for k, v in h2_dict.items()}
+        if h1_dict[max(h1_dict)] == h2_dict[max(h2_dict)]:
+          l1 = sorted([x for x in hand1_vs if x != h1_dict[max(h1_dict)]], reverse = True)
+          l2 = sorted([x for x in hand2_vs if x != h2_dict[max(h2_dict)]], reverse = True)
+          for i in xrange(len(l1)):
+            if l1[i] == l2[i]:
+              continue
+            else:
+              return l1[i] > l2[i]
+        else:
+          return h1_dict[max(h1_dict)] > h2_dict[max(h2_dict)]
+
+  player_1_wins = 0
+  tb = []
+  f = open("files/poker.txt")
+  for line in f:
+    l = line.split()
+    hand1 = l[:5]
+    hand2 = l[5:]
+    # print "hand1: %s\nhand2: %s" %(str(hand1), str(hand2));
+    hand1_result = determine_hand(hand1)
+    hand2_result = determine_hand(hand2)
+    # print "hand1_result: %i\nhand2_result: %i" %(hand1_result, hand2_result)
+    if hand1_result > hand2_result:
+      # print "WIN"
+      player_1_wins += 1
+    else:
+      if hand1_result == hand2_result:
+        if tiebreak(hand1, hand2, hand1_result):
+          # print "WIN"
+          player_1_wins += 1
+    # print "\n"
+  print "Player 1 wins %i of the 1000 games." % player_1_wins
+
+  # l = "6H 4H 5C 3H 2H 3S QH 5S 6S AS".split()
+  # print determine_hand(l[:5])
+
+  # print determine_hand(['5C', '9C', '8C', 'TS', '4S'])
+
 def p55():
   def is_lychrel(n):
     def reverse(n):
@@ -1131,7 +1403,7 @@ def p67():
       arr.append(nums)
     return arr
 
-  input = readFile("triangle.txt")
+  input = readFile("files/triangle.txt")
   OPT = copy.copy(input)
   # fills the edges of OPT
   for i in xrange(1, len(OPT)):
@@ -1240,13 +1512,10 @@ def p92():
   print "cnt_89 : %d" % cnt_89
   print "dictionary size : %d" % len(seen_numbers)
 
-    
-  
-
 ##############################################################################
 t1 = time.time()
 
-p92()
+p54()
 
 print "<Finished in " + str(time.time() - t1) + " seconds.>"
 
