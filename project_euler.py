@@ -675,6 +675,7 @@ def p30():
       tot += i
   print tot
 
+# time 11.84 seconds
 def p31():
   # use dynamic programming  
   coins = [1, 2, 5, 10, 20, 50, 100, 200]
@@ -690,6 +691,7 @@ def p31():
       return count_combos(sum, coins[1:]) + count_combos(sum - coins[0], coins)
 
   print count_combos(200, coins)
+  
 def p33():
   non_trivials = []
 
