@@ -6,6 +6,7 @@
 
 from util import *
 
+# time: 0.00031 seconds
 def p1():
   i = 1;
   sum = 0;  
@@ -15,6 +16,7 @@ def p1():
     i += 1; 
   print sum
 
+# time: 4.3e-5 seconds
 def p2():
   target = 4000000
   arr = fibonacci(target);
@@ -24,6 +26,7 @@ def p2():
       sum += i
   print sum
 
+# time: 0.023 seconds
 def p3():
   target = 997799
   i = 2;
@@ -35,6 +38,7 @@ def p3():
     i+=1
   print largest_prime
 
+# time: 0.8212 seconds
 def p4():
   largest_pali = 9009
   for i in xrange(999):
@@ -45,6 +49,7 @@ def p4():
         break
   print largest_pali
 
+# time: 0.00015 seconds
 def p5():
   sm_factorization = prime(2520)
   for x in xrange(11, 20):
@@ -52,6 +57,7 @@ def p5():
     sm_factorization = lcm(sm_factorization, tmp)
   print wrap(sm_factorization)
 
+# time: 4.7922e-5 seconds
 def p6():
 
   print 5050**2 - sum_squares(100)
@@ -669,14 +675,21 @@ def p30():
       tot += i
   print tot
 
-# unsolved
 def p31():
-  currency = [1,2,5,10,20,50,100,200]
-  # currency = [100, 200]
-  currency.reverse();
-  total = 200;
-  cnt = 0   
+  # use dynamic programming  
+  coins = [1, 2, 5, 10, 20, 50, 100, 200]
 
+  def count_combos(sum, coins):
+    if sum == 0:
+      return 1
+    elif sum < 0:
+      return 0
+    elif coins == []:
+      return 0
+    else:
+      return count_combos(sum, coins[1:]) + count_combos(sum - coins[0], coins)
+
+  print count_combos(200, coins)
 def p33():
   non_trivials = []
 
@@ -982,24 +995,21 @@ def p42():
   print tri_cnt
 
 def p44():
-  pentagon_list = [1, 5, 12, 22, 35, 51, 70, 92]
+  # pentagon_list = [1, 5, 12, 22, 35, 51, 70, 92]
+  pentagon_list = {1:1, 5:1, 12: 1, 22:1, 35:1, 51:1, 70:1, 92:1}
   def create_pentagon_list():
     n = 9
     while n != 100000:
-      pentagon_list.append(int(n * (3*n-1) * 0.5))
+      pentagon_list[int(n * (3*n-1) * 0.5)] = 1
       n+=1
   create_pentagon_list()
-
   d = []
-  # for i in pentagon_list:
-  #   for j in pentagon_list:
-  #     print i,j
-  #     if i == j or j > i: break
-  #     elif i+j in pentagon_list and i - j in pentagon_list:
-  #       d.append(i - j)
-  # print d
+  for i in pentagon_list.keys():
+    for j in pentagon_list:
+      if i+j in pentagon_list and i - j in pentagon_list:
+        d.append(abs(i - j))
+  print d
 
-  print max(pentagon_list)
 
 def p45():
   def create_triangle_dict():
@@ -1337,19 +1347,19 @@ def p54():
     l = line.split()
     hand1 = l[:5]
     hand2 = l[5:]
-    # print "hand1: %s\nhand2: %s" %(str(hand1), str(hand2));
+    print "hand1: %s\nhand2: %s" %(str(hand1), str(hand2));
     hand1_result = determine_hand(hand1)
     hand2_result = determine_hand(hand2)
-    # print "hand1_result: %i\nhand2_result: %i" %(hand1_result, hand2_result)
+    print "hand1_result: %i\nhand2_result: %i" %(hand1_result, hand2_result)
     if hand1_result > hand2_result:
-      # print "WIN"
+      print "WIN"
       player_1_wins += 1
     else:
       if hand1_result == hand2_result:
         if tiebreak(hand1, hand2, hand1_result):
-          # print "WIN"
+          print "WIN"
           player_1_wins += 1
-    # print "\n"
+    print "\n"
   print "Player 1 wins %i of the 1000 games." % player_1_wins
 
   # l = "6H 4H 5C 3H 2H 3S QH 5S 6S AS".split()
@@ -1515,9 +1525,9 @@ def p92():
 ##############################################################################
 t1 = time.time()
 
-p54()
+p31()
 
-print "<Finished in " + str(time.time() - t1) + " seconds.>"
+print "< Finished in " + str(time.time() - t1) + " seconds. >"
 
 
 
