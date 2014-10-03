@@ -692,6 +692,9 @@ def p31():
 
   print count_combos(200, coins)
   
+def p32():
+  pass
+
 def p33():
   non_trivials = []
 
