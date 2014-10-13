@@ -675,20 +675,29 @@ def p30():
       tot += i
   print tot
 
-# time 11.84 seconds
+# time .004 seconds
 def p31():
   # use dynamic programming  
   coins = [1, 2, 5, 10, 20, 50, 100, 200]
+  num_ways = {}
 
   def count_combos(sum, coins):
     if sum == 0:
       return 1
+    elif sum in num_ways and len(coins) in num_ways[sum]:
+      return num_ways[sum][len(coins)]
     elif sum < 0:
       return 0
     elif coins == []:
       return 0
     else:
-      return count_combos(sum, coins[1:]) + count_combos(sum - coins[0], coins)
+      sum_excluding = count_combos(sum, coins[1:])
+      sum_including = count_combos(sum - coins[0], coins)
+      if sum in num_ways:
+        num_ways[sum][len(coins)] = sum_excluding + sum_including
+      else:
+        num_ways[sum] = {len(coins) : sum_excluding + sum_including}
+      return sum_excluding + sum_including
 
   print count_combos(200, coins)
   
@@ -1014,7 +1023,6 @@ def p44():
       if i+j in pentagon_list and i - j in pentagon_list:
         d.append(abs(i - j))
   print d
-
 
 def p45():
   def create_triangle_dict():
