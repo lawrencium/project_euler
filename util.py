@@ -4,6 +4,29 @@ import calendar # for p19()
 import decimal  # for p26()
 import operator # for p59()
 
+# calculates set subtraction of A - B
+def set_subtraction(A, B):
+  return_set = []
+  for a in A:
+    if not a in B:
+      return_set.append(a)
+  return return_set
+
+# calculates the powerset of l
+def power_set(l):
+  size = len(l)
+  pset = []
+  for i in xrange(2**size):
+    i_bin = bin(i)[2:].zfill(size)
+    partial_pset = []
+    for j in xrange(len(i_bin)):
+      c = i_bin[j]
+      if c == '1':
+        partial_pset.append(l[j])
+    pset.append(partial_pset)
+  return pset
+
+
 # returns n1 xor n2 where n1 and n2 are ints
 def xor(n1, n2):
   return (n1 & ~n2) | (~n1  & n2)

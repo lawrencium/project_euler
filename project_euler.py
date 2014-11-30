@@ -701,12 +701,50 @@ def p31():
 
   print count_combos(200, coins)
   
+# time 48.6 seconds
 def p32():
-  cnt = 0;
-  for i in xrange(987654321):
-    for j in xrange(i):
-      cnt += 1
-  print cnt
+  def power_set(l):
+    size = len(l)
+    pset = []
+    for i in xrange(1, 2**size - 1):
+      i_bin = bin(i)[2:].zfill(size)
+      partial_pset = ""
+      for j in xrange(len(i_bin)):
+        c = i_bin[j]
+        if c == '1':
+          partial_pset += str(l[j])
+      pset.append(partial_pset)
+    return pset
+  def scrambled_set(s, s_list):
+    if len(s) == 1:
+      return [s]
+    elif len(s) == 0:
+      return []
+    else:
+      for char in s:
+        s_list += map(lambda x: char + x, scrambled_set(s.replace(char, "", 1), []))
+      return s_list
+
+  pandigital_products = {}
+  PANDIGITAL_DIGITS = map(str, [1, 2, 3, 4, 5, 6, 7, 8, 9])
+  multiplicands = power_set(PANDIGITAL_DIGITS)
+  
+  for multiplicand in multiplicands:
+    scrambled_multiplicands = scrambled_set(multiplicand, [])
+    for scrambled_multiplicand in scrambled_multiplicands:
+      multiplicand_as_num = int(''.join(map(str, scrambled_multiplicand)))
+      multipliers = power_set(set_subtraction(PANDIGITAL_DIGITS, multiplicand))
+      for multiplier in multipliers:
+        scrambled_multipliers = scrambled_set(multiplier, [])
+        for scrambled_multiplier in scrambled_multipliers:
+          multiplier_as_num = int(''.join(map(str, scrambled_multiplier)))
+          product = multiplier_as_num * multiplicand_as_num
+          all_digits = str(product) + scrambled_multiplier + scrambled_multiplicand
+          if len(all_digits) == len(set(all_digits)) and not '0' in str(product) and len(all_digits) == len(PANDIGITAL_DIGITS):
+            # print set(str(product) + multiplier + multiplicand)
+            # print "%i x %i = %i" %(multiplicand_as_num,multiplier_as_num, product)
+            pandigital_products[product] = 1
+  print sum(pandigital_products.keys())
 
 def p33():
   non_trivials = []
@@ -1782,5 +1820,7 @@ def p92():
 
 ##############################################################################
 t1 = time.time()
+
+p32()
 
 print "< Finished in " + str(time.time() - t1) + " seconds. >"
