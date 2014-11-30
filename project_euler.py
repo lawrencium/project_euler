@@ -702,7 +702,11 @@ def p31():
   print count_combos(200, coins)
   
 def p32():
-  pass
+  cnt = 0;
+  for i in xrange(987654321):
+    for j in xrange(i):
+      cnt += 1
+  print cnt
 
 def p33():
   non_trivials = []
@@ -1415,6 +1419,180 @@ def p56():
         greatest_sum = s
   print "greatest sum : %d" % greatest_sum
 
+# unsolved
+def p59():
+  def readFile(filename):
+    arr = []
+    f = open(filename)
+    for line in f:
+      arr = [int(x.strip()) for x in line.split(",")]
+    return arr
+
+  def decrypt(arr, s):
+    msg = ""
+    for i in xrange(len(arr)):
+      k = ord(s[i % len(s)])
+      msg += chr(xor(arr[i], k))
+    return msg
+
+  # removes keys from the front of arr up to but not including n
+  # arr is sorted
+  def remove_front(arr, n):
+    for x in arr:
+      v = xor(x, n)
+      # print "v : %d" % v
+      if v < MIN_INT or v > MAX_INT or v in EXCEPTIONS:
+        # print "removing : %d" % x
+        arr.remove(x)
+      else:
+        break
+
+  # removes keys from the back of arr up to but not including n
+  # arr is sorted
+  def remove_back(arr, n):
+    for x in reversed(arr):
+      v = xor(x, n)
+      if v < MIN_INT or v > MAX_INT or v in EXCEPTIONS:
+        arr.remove(x)
+      else:
+        break
+
+  # adds the values low...high to arr
+  # arr is sorted
+  def add_range(arr, low, high):
+    remove_back(arr, high)
+    remove_front(arr, low)
+    for i in xrange(low, arr[0]):
+      arr = [i] + arr
+    for i in xrange(high, arr[-1]):
+      arr += [i]
+
+  MIN_INT = ord(' ')
+  MAX_INT = ord('~')
+  # EXCEPTIONS = [ord('('), ord(')'), ord('{'), ord('}')]
+  # EXCEPTIONS = [ord('('), ord(')')]
+  EXCEPTIONS = []
+
+  # possible_keys = [i in xrange(MIN_INT, MAX_INT + 1)]
+  possible_keys = []
+  file_arr = readFile("files/cipher.txt")
+
+  for i in xrange(ord('a'), ord('z')):
+    possible_keys.append(i)
+
+  # for i in file_arr:
+  #   remove_front(possible_keys, i)
+    # remove_back(possible_keys, i)
+
+  # index = {}
+  # for i in file_arr:
+  #   if i in index:
+  #     index[i] += 1
+  #   else:
+  #     index[i] = 1
+
+  # print possible_keys
+
+  # index = {}
+  # for i in possible_keys:
+  #   index[i] = 0
+
+  # for i in file_arr:
+  #   if xor(i, ord('t')) in possible_keys:
+  #     index[xor(i, ord('t'))] += 1
+  #   # elif xor(i, ord('E')) in possible_keys:
+  #   #   index[xor(i, ord('E'))] += 1
+
+  # inv_ind = {}
+  # for k, v in index.iteritems():
+  #   inv_ind[v] = inv_ind.get(v, [])
+  #   inv_ind[v].append(k)
+
+  # print inv_ind
+  # key = chr(117) + chr(117) + chr(100)
+  # msg = decrypt(file_arr, key)
+
+  # new_msg = ""
+  # for i in xrange(len(msg)):
+  #   if i % 3 == 2:
+  #     new_msg += msg[i]
+  #   else:
+  #     new_msg += "_"
+
+  # # print new_msg
+  # print msg
+
+  bucket_1 = []
+  bucket_2 = []
+  bucket_3 = []
+
+  for i in xrange(len(file_arr)):
+    if i % 3 == 0:
+      bucket_1.append(file_arr[i])
+    elif i % 3 == 1:
+      bucket_2.append(file_arr[i])
+    else:
+      bucket_3.append(file_arr[i])
+
+  index_1 = {}
+  index_2 = {}
+  index_3 = {}
+
+  for i in bucket_1:
+    if i in index_1:
+      index_1[i] += 1
+    else:
+      index_1[i] = 1
+  for i in bucket_2:
+    if i in index_2:
+      index_2[i] += 1
+    else:
+      index_2[i] = 1
+  for i in bucket_3:
+    if i in index_3:
+      index_3[i] += 1
+    else:
+      index_3[i] = 1
+
+  inv_ind1 = {}
+  for k, v in index_1.iteritems():
+    inv_ind1[v] = inv_ind1.get(v, [])
+    inv_ind1[v].append(k)
+  inv_ind2 = {}
+  for k, v in index_2.iteritems():
+    inv_ind2[v] = inv_ind2.get(v, [])
+    inv_ind2[v].append(k)
+  inv_ind3 = {}
+  for k, v in index_3.iteritems():
+    inv_ind3[v] = inv_ind3.get(v, [])
+    inv_ind3[v].append(k)
+
+  # print max(inv_ind1)
+  # print max(inv_ind2)
+  # print max(inv_ind3)
+  print sorted(inv_ind1.keys(), reverse = True)
+  print inv_ind1
+  print sorted(inv_ind2.keys(), reverse = True)
+  print inv_ind2
+  print sorted(inv_ind3.keys(), reverse = True)
+  print inv_ind3
+
+
+  key1 = chr(xor(2, ord('e')))
+  key2 = chr(xor(10, ord('e')))
+  key3 = chr(xor(1, ord('e')))
+  key = key1 + key2 + key3
+  print "key is " + key
+
+  msg = decrypt(file_arr, key)
+  print msg
+
+  sum_ascii = 0;
+  for c in msg:
+    sum_ascii += ord(c)
+  print sum_ascii
+
+
 def p67():
   def readFile(filename):
     arr = []
@@ -1490,14 +1668,14 @@ def p81():
       arr.append(nums)
     return arr
   
-  input = readFile("matrix.txt")
+  input = readFile("files/matrix.txt")
   OPT = []
 
-  # create OPT table initialized to all 0
+  # create OPT table initialized to all -1
   for i in xrange(len(input)):
     arr = []
     for j in xrange(len(input)):
-      arr.append(0)
+      arr.append(-1)
     OPT.append(arr)
 
   # Recurrence Relation  
@@ -1519,6 +1697,73 @@ def p81():
   print OPT[len(OPT) - 1][len(OPT) - 1]
   # print OPT[0][0]
 
+# unsolved
+def p82():
+  def readFile(filename):
+    arr = []
+    f = open(filename)
+    for line in f:
+      nums = map(int, line.split(','));
+      arr.append(nums)
+    return arr
+  
+  input = readFile("files/matrix.txt")
+  OPT = []
+
+  # create OPT table initialized to all 0
+  for i in xrange(len(input)):
+    arr = []
+    for j in xrange(len(input)):
+      arr.append(-1)
+    OPT.append(arr)
+
+  # Recurrence Relation  
+  # OPT[i][j] = min(OPT[i][j-1], OPT[i-1][j], OPT[i+1][j]) + input[i,j]
+
+  # fill edge cases first
+  for i in xrange(len(OPT)):
+    OPT[i][0] = input[i][0]
+
+
+  # fill in rest of OPT in left-ward direction
+  for j in xrange(1, len(OPT)):
+    for i in xrange(len(OPT)):
+      OPT[i][j] = OPT[i][j-1] + input[i][j]
+    for i in xrange(len(OPT)):
+      # print OPT[i][j] == OPT[i][j-1] + input[i][j]
+      if i == 0: # at top of table
+        OPT[i][j] = min(OPT[i][j-1], OPT[i+1][j]) + input[i][j]
+      elif i == len(OPT) - 1: # at bottom of table
+        OPT[i][j] = min(OPT[i][j-1], OPT[i-1][j]) + input[i][j]
+      else: # in middle of table
+        OPT[i][j] = min(OPT[i][j-1], OPT[i+1][j], OPT[i-1][j]) + input[i][j]
+
+  min_path = []
+  for i in xrange(len(OPT)):
+    min_path.append(OPT[i][-1])
+    # min_path = min(min_path, OPT[i][-1])
+
+  # print OPT
+  print min(min_path)
+  # # fill rest of OPT
+  # for i in xrange(0,len(OPT)):
+  #   for j in xrange(0,len(OPT)):
+  #     if i < len(OPT) - 1:
+  #       OPT[i][j] = min(OPT[i][j-1], OPT[i-1][j], OPT[i+1][j]) + input[i][j]
+  #     else:
+  #       OPT[i][j] = min(OPT[i][j-1], OPT[i-1][j]) + input[i][j]
+
+  # # print OPT[len(OPT) - 1][len(OPT) - 1]
+  # # print OPT[0][0]
+  # min_path = OPT[0][-1]
+  # print min_path
+  # for i in xrange(len(OPT)):
+  #   print "i : %i\nv : %i\n" %(i, OPT[i][-1])
+  #   min_path = min (min_path, OPT[i][-1])
+
+  # # print OPT
+  # print min_path
+
 # time: 112.4 seconds
 def p92():
   seen_numbers = {}
@@ -1538,15 +1783,4 @@ def p92():
 ##############################################################################
 t1 = time.time()
 
-p31()
-
 print "< Finished in " + str(time.time() - t1) + " seconds. >"
-
-
-
-
-
-
-
-
-

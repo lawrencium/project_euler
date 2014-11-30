@@ -2,6 +2,11 @@ import math, time
 import copy
 import calendar # for p19()
 import decimal  # for p26()
+import operator # for p59()
+
+# returns n1 xor n2 where n1 and n2 are ints
+def xor(n1, n2):
+  return (n1 & ~n2) | (~n1  & n2)
 
 def fibonacci(n):
   arr = [1,1]
