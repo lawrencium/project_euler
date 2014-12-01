@@ -897,6 +897,33 @@ def p37():
   print arr
   sum_array(arr)
 
+# time : 0.004 seconds
+def p38():
+  def getConcatenatedProduct(n):
+    pass
+
+  # PANDIGITAL_DIGITS = [1, 2, 3, 4, 5, 6, 7, 8 9]
+
+  nums = ['918273645']
+  # i = 9
+  for i in xrange(9000, 9900):
+    # print i 
+    cnt = 1
+    concatenated_product = ""
+    while True:
+      concatenated_product += str(cnt * i)
+      cnt += 1
+      # print concatenated_product
+      if len(set(concatenated_product)) != len(concatenated_product) or '0' in concatenated_product:
+        break
+      else:
+        if len(concatenated_product) == 9:
+          nums.append(concatenated_product)
+  print max(nums)
+
+
+
+
 def p39():
   perimeter_count = {}
   max_p = 0
@@ -1821,6 +1848,6 @@ def p92():
 ##############################################################################
 t1 = time.time()
 
-p32()
+p38()
 
 print "< Finished in " + str(time.time() - t1) + " seconds. >"
