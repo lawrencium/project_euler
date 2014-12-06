@@ -978,80 +978,27 @@ def p40():
 
 # unsolved
 def p41():
-  def is_ascending(arr):
-    def f(arr, prev):
-      if arr == []:
-        return True
+  def scrambled_set(s):
+    def helper(s, s_list):
+      if len(s) == 1:
+        return [s]
+      elif len(s) == 0:
+        return []
       else:
-        return arr[0] >= prev and f(arr[1:], arr[0])
-    return len(arr) <= 1 or f(arr[1:], arr[0])
-  def is_descending(arr):
-    def f(arr, prev):
-      if arr == []:
-        return True
-      else:
-        return arr[0] <= prev and f(arr[1:], arr[0])
-    return len(arr) <= 1 or f(arr[1:], arr[0])
+        for char in s:
+          s_list +=map(lambda x: char + x, helper(s.replace(char, "", 1), []))
+        return s_list
+    return helper(s, [])
 
-  def breakpoint(arr):
-    i = 1
-    iter = arr[0]
-    for elem in arr[1:]:
-      if elem > iter:
-        break
-      i += 1
-      iter = elem
-    return i
+  PANDIGITAL_DIGITS = '123456789'
 
-  def make_pandigit(n):
-    s = ""
-    for i in xrange(1, n+1):
-      s += str(i)
-    return int(s)
-
-  class Pandigital(Number):
-    def swap(self, a1, a2):
-      t = self.rep[a1]
-      self.rep[a1] = self.rep[a2]
-      self.rep[a2] = t 
-    def find_next_largest_number(self):
-      def find_min(arr, v):
-        x = arr[0]
-        for i in arr:
-          if i < x and i > v:
-            x = i
-        return x
-      size = len(self.rep)
-      if is_descending(self.rep):
-        raise Exception("no next largest number!")
-      elif is_ascending(self.rep):
-        self.swap(size - 2, size - 1)
-      else:
-        # find breakpoint
-        b_point = breakpoint(self.rep)
-        left_side = self.rep[:b_point]
-        right_side = self.rep[b_point:]
-        index_min = right_side.index(find_min(right_side, left_side[-1])) + len(left_side)
-        self.swap(index_min, len(left_side) - 1)
-        right_side = sorted(self.rep[b_point:])
-        self.rep = self.rep[:b_point] + right_side        
-
-  for n in xrange(9, 0, -1):
-    current_pan = Pandigital(make_pandigit(n))
-    in_order_pans = []
-    while True:
-      in_order_pans.insert(0, current_pan.to_int())
-      try:
-        current_pan.find_next_largest_number()
-      except Exception, e:
-        # print "excepted"
+  for i in xrange(9, 0, -1):
+    n_pandigital = PANDIGITAL_DIGITS[:i]
+    for pandigital in sorted(scrambled_set(n_pandigital), reverse=True):
+      if is_prime(int(pandigital)):
+        print "largest prime pandigital : %s" % pandigital
         break
 
-    for i in in_order_pans:
-      # print i
-      if is_prime(i):
-        print i
-        break
       
 def p42():
   input = open("words.txt")
@@ -1872,6 +1819,6 @@ def p92():
 ##############################################################################
 t1 = time.time()
 
-p43()
+p41()
 
 print "< Finished in " + str(time.time() - t1) + " seconds. >"
