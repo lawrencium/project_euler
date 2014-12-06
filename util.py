@@ -4,6 +4,19 @@ import calendar # for p19()
 import decimal  # for p26()
 import operator # for p59()
 
+# calculates all permutations of the list l
+def scrambled_set(s):
+  def helper(s, s_list):
+    if len(s) == 1:
+      return [s]
+    elif len(s) == 0:
+      return []
+    else:
+      for char in s:
+        s_list +=map(lambda x: char + x, helper(s.replace(char, "", 1), []))
+      return list(set(s_list))
+  return helper(s, [])
+
 # calculates set subtraction of A - B
 def set_subtraction(A, B):
   return_set = []

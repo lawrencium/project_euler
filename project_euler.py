@@ -899,9 +899,6 @@ def p37():
 
 # time : 0.004 seconds
 def p38():
-  def getConcatenatedProduct(n):
-    pass
-
   # PANDIGITAL_DIGITS = [1, 2, 3, 4, 5, 6, 7, 8 9]
 
   nums = ['918273645']
@@ -920,9 +917,6 @@ def p38():
         if len(concatenated_product) == 9:
           nums.append(concatenated_product)
   print max(nums)
-
-
-
 
 def p39():
   perimeter_count = {}
@@ -1076,6 +1070,38 @@ def p42():
     if sum in triangle_list:
       tri_cnt += 1
   print tri_cnt
+
+def p43():
+  def filter_num(i):
+    i1 = int(i[0])
+    i3 = int(i[2])
+    i4 = int(i[3])
+    i5 = int(i[4])
+    i6 = int(i[5])
+    i7 = int(i[6])
+    i8 = int(i[7])
+    div_2 = i4 % 2 == 0
+    div_3 = (i3 + i4 + i5) % 3 == 0
+    div_5 = i6 == 5
+    div_7 = int(i[4:7]) % 7 == 0
+    div_11 = int(i[5:8]) % 11 == 0
+    div_13 = int(i[6:9]) % 13 == 0
+    div_17 = int(i[7:10]) % 17 == 0
+    # print div_11
+    return i1 != 0 and div_2 and div_3 and div_5 and div_7 and div_11 and div_13 and div_17
+  PANDIGITAL_DIGITS = '012346789'
+  # print map(lambda x: x[:5] + '5' + x[5:], scrambled_set(''.join(PANDIGITAL_DIGITS)))
+  
+  pandigital_sum = 0
+  for i in scrambled_set(PANDIGITAL_DIGITS):
+    x = i[:5]+'5'+i[5:]
+    # print x 
+    if filter_num(x):
+      pandigital_sum += int(x)
+      # print x
+
+  print "pandigital_sum : %i" % pandigital_sum
+  # print filter_num('1430952867')
 
 def p44():
   # pentagon_list = [1, 5, 12, 22, 35, 51, 70, 92]
@@ -1484,7 +1510,6 @@ def p56():
         greatest_sum = s
   print "greatest sum : %d" % greatest_sum
 
-# unsolved
 def p59():
   def readFile(filename):
     arr = []
@@ -1656,7 +1681,6 @@ def p59():
   for c in msg:
     sum_ascii += ord(c)
   print sum_ascii
-
 
 def p67():
   def readFile(filename):
@@ -1848,6 +1872,6 @@ def p92():
 ##############################################################################
 t1 = time.time()
 
-p38()
+p43()
 
 print "< Finished in " + str(time.time() - t1) + " seconds. >"
