@@ -4,6 +4,15 @@ import calendar # for p19()
 import decimal  # for p26()
 import operator # for p59()
 
+# solves the quadratic equation ax^2 + bx + c = 0
+def quadratic(a, b, c):
+  try:
+    r1 = (-b + math.sqrt(b**2 - 4*a*c)) / (2*a)
+    r2 = (-b - math.sqrt(b**2 - 4*a*c)) / (2*a)
+    return list(set([r1, r2]))
+  except:
+    return []
+
 # calculates all permutations of the list l
 def scrambled_set(s):
   def helper(s, s_list):
@@ -141,7 +150,6 @@ def hcf(n1, n2):
       hcf *= (k1 * min(v1, n2[k1]))
   return hcf
 
-
 # turns factorization list into number
 def wrap(x):
   sum = 1
@@ -203,6 +211,13 @@ def is_prime(n):
     if n % i == 0:
       return False;
   return True
+
+def only_primes(l):
+  return_l = []
+  for elem in l:
+    if is_prime(int(elem)):
+      return_l.append(elem)
+  return return_l
 
 def create_primes():
   prime_d = {2:1, 3:1, 5:1, 7:1, 11:1, 13:1}
