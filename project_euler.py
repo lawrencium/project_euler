@@ -1249,6 +1249,19 @@ def p50():
   # print OPT
   print "Done. Max_prime is %d" % max_prime
 
+def p52():
+  def same_ints(i1, i2):
+    return sorted(str(i1)) == sorted(str(i2))
+
+  range_start = 100000
+  while True:
+    for i in xrange(range_start, 2*range_start):
+      if same_ints(i, 2*i) and same_ints(i, 3*i) and same_ints(i, 4*i) and same_ints(i, 5*i) and same_ints(i, 6*i):
+        print "%i, %i, %i, %i, %i, %i" % (i, 2*i, 3*i, 4*i, 5*i, 6*i)
+        return
+    range_start *= 10
+
+
 def p53():
   cnt = 0
   for n in xrange(1, 101):
@@ -1849,9 +1862,29 @@ def p92():
   print "cnt_89 : %d" % cnt_89
   print "dictionary size : %d" % len(seen_numbers)
 
+def p99():
+  filepath = 'files/p99.txt'
+  f = open(filepath)
+  lines = f.readlines()
+  largest_number = BigNum(1,1)
+  line_num_largest = 0;
+  current_line_num = 0
+  for line in lines:
+    current_line_num += 1
+
+    [a, b] = map(int, line.split(','))
+    v = BigNum(a, b)
+    if v > largest_number:
+      largest_number = v
+      line_num_largest = current_line_num
+
+  print "line_num_largest : %i" % line_num_largest
+
+
+
 ##############################################################################
 t1 = time.time()
 
-p44()
+p99()
 
 print "< Finished in " + str(time.time() - t1) + " seconds. >"

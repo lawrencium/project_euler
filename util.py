@@ -356,3 +356,12 @@ class Number:
       cnt -= 1
     return sum
 
+# stores number in the form a**b
+class BigNum:
+  def __init__(self, a, b):
+    self._num = (a, b)
+    self._exp = b * math.log(a) / math.log(2)
+
+  def __cmp__(self, other):
+    return cmp(self._exp, other._exp)
+
