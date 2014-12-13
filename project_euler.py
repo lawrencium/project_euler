@@ -4,7 +4,7 @@
 
 # Go to http://projecteuler.net/problems to see the problems 
 
-import util
+import util, sys
 from util import *
 
 # time: 0.00031 seconds
@@ -1052,26 +1052,26 @@ def p43():
 def p44():
   def contains_int(l):
     for elem in l:
-      if int(elem) == elem:
+      if int(elem) == elem and elem > 0:
         return True
     return False
 
-  # pentagon_list = [1, 5, 12, 22, 35, 51, 70, 92]
-  pentagon_list = {1:1, 5:1, 12: 1, 22:1, 35:1, 51:1, 70:1, 92:1}
-  def create_pentagon_list():
-    n = 9
-    while n != 100000:
-      pentagon_list[int(n * (3*n-1) * 0.5)] = 1
-      n+=1
-  create_pentagon_list()
+  def is_pentagon(n):
+    return contains_int(quadratic(3, -1, -2 * n))
 
-  pentagon_keys = pentagon_list.keys()
-  for j in xrange(len(pentagon_keys)):
-    for i in xrange(j + 1, len(pentagon_keys) - 1):
-      pl_i = pentagon_keys[i]
-      pl_j = pentagon_keys[j]
-      if pl_i - pl_j in pentagon_list and contains_int(quadratic(3, -1, -2 * (pl_i + pl_j))):
-        print "i : %i, j : %i, d : %i" % (pl_i, pl_j, pl_i-pl_j)
+  RANGE_NUMS = 3000
+  minimal_difference = sys.maxint
+  for k in xrange(1, RANGE_NUMS):
+    # print k 
+    p_k = k * (3*k - 1) / 2
+    for j in xrange(k + 1, RANGE_NUMS):
+      p_j = j * (3*j - 1) / 2
+      difference = p_j - p_k
+      if difference > minimal_difference:
+        break
+      if is_pentagon(difference) and is_pentagon(p_j + p_k):
+        print "k : %i, j : %i, d : %i" % (p_k, p_j, p_j - p_k)
+        minimal_difference = p_j - p_k
 
 def p45():
   def create_triangle_dict():
@@ -1183,10 +1183,12 @@ def p48():
   print sum % 10**10
 
 def p49():
+  # @override
   def scrambled_set(s):
     return filter(lambda x: x[0] != '0', util.scrambled_set(s))
 
   seen_values = {}
+  cnt = 0
   for i in xrange(1001, 9999):
     str_i = ''.join(sorted(str(i)))
     if str_i in seen_values:
@@ -1202,7 +1204,8 @@ def p49():
           middle_prime = scrambled_i[j] + (scrambled_i[k] - scrambled_i[j])/2
           if middle_prime in scrambled_i:
             print "%i, %i, %i" % (scrambled_i[j], middle_prime, scrambled_i[k])
-            # return
+            cnt += 1
+            if cnt == 2: return
       seen_values[str_i] = 1
 
 def p50():
@@ -1849,6 +1852,6 @@ def p92():
 ##############################################################################
 t1 = time.time()
 
-p49()
+p44()
 
 print "< Finished in " + str(time.time() - t1) + " seconds. >"
