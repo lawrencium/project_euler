@@ -206,10 +206,12 @@ def proper_divisors(n):
   return divisors
 
 def is_prime(n):
-  n = math.sqrt(n*n)
-  for i in range(2, int(math.sqrt(n))  + 1):
+  if n%2 == 0: 
+    return False
+
+  for i in xrange(3, int(math.sqrt(n)) + 1, 2):
     if n % i == 0:
-      return False;
+      return False
   return True
 
 def only_primes(l):
