@@ -1261,7 +1261,6 @@ def p52():
         return
     range_start *= 10
 
-
 def p53():
   cnt = 0
   for n in xrange(1, 101):
@@ -1502,6 +1501,44 @@ def p56():
       if s > greatest_sum:
         greatest_sum = s
   print "greatest sum : %d" % greatest_sum
+
+def p58():
+  class SpiralPrime:
+    def __init__(self, side_length=1):
+      # self.spiral = [[1]]
+      self.current = 1
+      self.prime_diagonal = 0
+      self.diagonal_length = 1
+      self.side_length = 1
+      while side_length > self.side_length:
+        self.increment()
+
+    def increment(self):
+      c = self.current
+      self.side_length += 2
+      side_length = self.side_length
+      bottom_right = (self.side_length) ** 2
+      bottom_left = bottom_right - side_length + 1
+      top_left = bottom_left - side_length + 1
+      top_right = top_left - side_length + 1
+
+      self.diagonal_length += 4
+      self.prime_diagonal += is_prime(bottom_left) + is_prime(top_left) + is_prime(top_right)
+
+    def get_prime_ratio(self):
+      return float(self.prime_diagonal) / self.diagonal_length
+    
+    def get_side_length(self):
+      return self.side_length
+
+  spiral = SpiralPrime(7)
+  while spiral.get_prime_ratio() > 0.10:
+    spiral.increment()
+  print "spiral side length : %i" % spiral.get_side_length()
+
+
+
+
 
 def p59():
   def readFile(filename):
@@ -1885,6 +1922,6 @@ def p99():
 ##############################################################################
 t1 = time.time()
 
-p99()
+p58()
 
 print "< Finished in " + str(time.time() - t1) + " seconds. >"
