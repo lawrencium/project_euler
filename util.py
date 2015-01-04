@@ -7,22 +7,17 @@ from fractions import Fraction # for p57()
 
 # returns all primes less than or equal to n
 def sieve_of_eratosthenes(n):
-  def transform_sieve(l):
-    return_l = [2] + [2*i + 1 for i in xrange(1, len(l)) if l[i]]
-  sieve = [True for i in xrange(0, n / 2 * 2, 2)] # gets 
+  sieve = [True for i in xrange((n-1)/2 + 1)] # gets 
   
   for sieve_ind in xrange(1, len(sieve)):
     if sieve_ind:
       val_at_ind = 2*sieve_ind + 1
       if val_at_ind**2 > n: break
-      for composite in xrange(val_at_ind + 2*val_at_ind, n, 2*val_at_ind):
+      for composite in xrange(val_at_ind + 2*val_at_ind, n + 1, 2*val_at_ind):
         composite_ind = (composite - 1) / 2
         sieve[composite_ind] = False
-
+  print sieve
   return [2] + [2*i + 1 for i in xrange(1, len(sieve)) if sieve[i]]
-
-
-
 
 # solves the quadratic equation ax^2 + bx + c = 0
 def quadratic(a, b, c):
@@ -145,7 +140,10 @@ def index(l, x):
   return i
 
 # gives lcm of 2 prime_factorization arrays
-def lcm(n1, n2):
+def lcm(a, b):
+  n1 = prime_factorization(a).items()
+  n2 = prime_factorization(b).items()
+  # print n1
   arr = []
   for (a1, a2) in n1:
     new_elem = (a1, a2)
@@ -155,7 +153,7 @@ def lcm(n1, n2):
   for (b1,b2) in n2:
     if not contains(n1, b1):
       arr.append((b1, b2))
-  return arr
+  return wrap(arr)
 
 # gives hcf of 2 numbers; also accepts prime_factorization arrays
 def hcf(n1, n2):
@@ -384,4 +382,3 @@ class BigNum:
 
   def __cmp__(self, other):
     return cmp(self._exp, other._exp)
-

@@ -1530,21 +1530,67 @@ def p57():
 
       self.iter += 1
 
-    def fraction(self):
-      # x = eval(compile(self.expression, '<string>', 'eval', __future__.division.compiler_flag))
-      x = float(eval(self.expression))
-      y = x.as_integer_ratio()
-      return Fraction(x).limit_denominator()
+    def condense_expression(self):
+      exp = self.expression
+      # while exp.count(')') >= 99:
+      while ')' in exp:
+        # print exp
+        ind_1 = exp.rindex('(')
+        ind_2 = exp.index(')')
+        x = eval(compile(exp[ind_1 + 1:ind_2], '<string>', 'eval', __future__.division.compiler_flag))
+        exp = exp[:ind_1] + str(x) + exp[ind_2 + 1:]
+      return exp
 
+    def fraction(self):
+      exp = self.expression
+      # print exp
+      while ')' in exp:
+        # print exp
+        ind_1 = exp.rindex('(')
+        ind_2 = exp.index(')')
+        fraction = SRFraction.evaluate_string(exp[ind_1 + 1:ind_2])
+        exp = exp[:ind_1] + str(fraction) + exp[ind_2 + 1:]
+      n, d = SRFraction.evaluate_string(exp).split('div')
+      return n + '/' + d
+
+  class SRFraction(Fraction):
+    @staticmethod
+    def evaluate_string(s):
+      ls, rs = s.split('+')
+      # print ls, rs
+      ls_f = Fraction(ls)
+      
+      if 'div' in rs:
+        rs = rs[rs.index('/') + 1:]
+        rs_n, rs_d = rs.split('div')
+        rs_f = Fraction(int(rs_n), int(rs_d))
+        rs_f = Fraction(1) / Fraction(rs_f)
+      else:
+        rs_f = Fraction(rs)
+      
+      # return ls_f + rs_f
+      return SRFraction.format_string(str(ls_f + rs_f))
+
+    @staticmethod
+    def format_string(s):
+      n, d = s.split('/')
+      return n + 'div' + d
+
+
+  # # SRFraction.evaluate_string('1/2+2')
+  # sr = SquareRoot(8)
+  # # print sr.expression
+  # print sr.fraction()
+  
   cnt = 0
-  sr = SquareRoot(1000)
-  print sr.expression
-  # for i in xrange(1000):
-  #   print i 
-  #   f = sr.fraction()
-  #   if len(str(f.numerator)) > len(str(f.denominator)):
-  #     cnt += 1
-  #   sr.iterate()
+  sr = SquareRoot()
+  for i in xrange(1000):
+    print i 
+    f = sr.fraction()
+    n, d = f.split('/')
+    if len(n) > len(d):
+      cnt += 1
+    sr.iterate()
 
   print "num fractions : % i" % cnt
 
@@ -1984,6 +2030,6 @@ def p99():
 ##############################################################################
 t1 = time.time()
 
-p37()
+p57()
 
 print "< Finished in " + str(time.time() - t1) + " seconds. >"
