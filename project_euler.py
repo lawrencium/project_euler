@@ -6,6 +6,7 @@
 
 import util, sys
 from util import *
+import __future__
 
 # time: 0.00031 seconds
 def p1():
@@ -107,19 +108,7 @@ def p9():
   print helper()
 
 def p10():
-  arr = [2,3,5,7,11, 13]
-  i = 17
-  while i < 2000000:
-    i_is_prime = True
-    for x in arr:
-      if i % x == 0:
-        i_is_prime = False
-        break
-    if i_is_prime:
-      print i
-      arr.append(i)
-    i += 2
-  print sum_array(arr)
+  print sum_array(sieve_of_eratosthenes(2000000))
 
 def p11():
   input = [
@@ -750,12 +739,12 @@ def p32():
 def p33():
   non_trivials = []
 
-  f = Fraction()
+  f = DigitFraction()
   for c in xrange(10):
     for d in xrange(10):
       for a in xrange(10):
         for b in xrange(10):
-          f = Fraction(a,b,c,d)
+          f = DigitFraction(a,b,c,d)
           if c == 0 and d == 0:
             continue
           if f.simplified_division():
@@ -1502,6 +1491,56 @@ def p56():
         greatest_sum = s
   print "greatest sum : %d" % greatest_sum
 
+def p57():
+  class SquareRoot:
+    def __init__(self, iter=1):
+      self.expression = '1+1/2'
+      self.iter = 1
+
+      while iter > self.iter:
+        self.iterate()
+
+    def iterate(self):
+      # print '\n'
+      last_2 = self.expression.rindex('2')
+      
+      first_paren = -1
+      closing_parens = ""
+      if self.iter > 1:
+        first_paren = self.expression.index(')')
+        closing_parens = self.expression[first_paren:]
+
+      self.expression = self.expression[:last_2] + '(2+1/2)'
+      self.expression += closing_parens
+      # # print self.expression
+      # if self.iter > 1:
+      #   first_paren = self.expression.index(')')
+      #   print self.expression
+      #   print self.expression[first_paren:]  
+      #   self.expression += self.expression[first_paren:]  
+      #   print self.expression
+
+      self.iter += 1
+
+    def fraction(self):
+      # x = eval(compile(self.expression, '<string>', 'eval', __future__.division.compiler_flag))
+      x = float(eval(self.expression))
+      y = x.as_integer_ratio()
+      return Fraction(x).limit_denominator()
+
+  cnt = 0
+  sr = SquareRoot(1000)
+  print sr.expression
+  # for i in xrange(1000):
+  #   print i 
+  #   f = sr.fraction()
+  #   if len(str(f.numerator)) > len(str(f.denominator)):
+  #     cnt += 1
+  #   sr.iterate()
+
+  print "num fractions : % i" % cnt
+
+
 def p58():
   class SpiralPrime:
     def __init__(self, side_length=1):
@@ -1535,10 +1574,6 @@ def p58():
   while spiral.get_prime_ratio() > 0.10:
     spiral.increment()
   print "spiral side length : %i" % spiral.get_side_length()
-
-
-
-
 
 def p59():
   def readFile(filename):
@@ -1899,6 +1934,27 @@ def p92():
   print "cnt_89 : %d" % cnt_89
   print "dictionary size : %d" % len(seen_numbers)
 
+def p97():
+  def expand_decimal(n, num_iterations):
+    def f(n, carry):
+      x = n * 10
+      return carry + str(int(x))
+    carry = ''
+    for i in xrange(num_iterations):
+      carry = f(n, carry)
+      n *= 10
+      n -= int(n)
+    return carry
+
+  n1 = math.log10(28433)
+  n2 = 7830457 * math.log10(2)
+
+  n3 = n1 + n2
+
+  n4 = n3 - int(n3)
+
+  print expand_decimal(n4, 35)
+  
 def p99():
   filepath = 'files/p99.txt'
   f = open(filepath)
@@ -1917,11 +1973,9 @@ def p99():
 
   print "line_num_largest : %i" % line_num_largest
 
-
-
 ##############################################################################
 t1 = time.time()
 
-p58()
+p10()
 
 print "< Finished in " + str(time.time() - t1) + " seconds. >"

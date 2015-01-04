@@ -3,6 +3,26 @@ import copy
 import calendar # for p19()
 import decimal  # for p26()
 import operator # for p59()
+from fractions import Fraction # for p57()
+
+# returns all primes less than or equal to n
+def sieve_of_eratosthenes(n):
+  def transform_sieve(l):
+    return_l = [2] + [2*i + 1 for i in xrange(1, len(l)) if l[i]]
+  sieve = [True for i in xrange(0, n / 2 * 2, 2)] # gets 
+  
+  for sieve_ind in xrange(1, len(sieve)):
+    if sieve_ind:
+      val_at_ind = 2*sieve_ind + 1
+      if val_at_ind**2 > n: break
+      for composite in xrange(val_at_ind + 2*val_at_ind, n, 2*val_at_ind):
+        composite_ind = (composite - 1) / 2
+        sieve[composite_ind] = False
+
+  return [2] + [2*i + 1 for i in xrange(1, len(sieve)) if sieve[i]]
+
+
+
 
 # solves the quadratic equation ax^2 + bx + c = 0
 def quadratic(a, b, c):
@@ -206,13 +226,10 @@ def proper_divisors(n):
   return divisors
 
 def is_prime(n):
-  if n%2 == 0: 
-    return False
-
   for i in xrange(3, int(math.sqrt(n)) + 1, 2):
     if n % i == 0:
       return False
-  return True
+  return not (n % 2 == 0)
 
 def only_primes(l):
   return_l = []
@@ -275,7 +292,7 @@ def number_chain(n, dict):
 ############################CLASSES###################################
 
 # represent a fraction as ([a,b],[c,d]) such that it is equal to (ab)/(cd)
-class Fraction:
+class DigitFraction:
   numerator = (0,0)
   denominator = (0, 1)
 
