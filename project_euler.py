@@ -880,7 +880,8 @@ def p37():
       n.rep = n.remove_lsb()
     return True
 
-  primes = create_primes()
+  primes = sieve_of_eratosthenes(750000)
+  primes = dict([i, 1] for i in primes)
   num_trunc = 0
   i = 11
   arr = []
@@ -1983,6 +1984,6 @@ def p99():
 ##############################################################################
 t1 = time.time()
 
-p35()
+p37()
 
 print "< Finished in " + str(time.time() - t1) + " seconds. >"
