@@ -146,16 +146,16 @@ def index(l, x):
 
 # gives lcm of 2 prime_factorization arrays
 def lcm(n1, n2):
-    arr = []
-    for (a1, a2) in n1:
-      new_elem = (a1, a2)
-      if contains(n2, a1): 
-        new_elem = (a1, max(a2, n2[index(n2, a1)][1]))
-      arr.append(new_elem)
-    for (b1,b2) in n2:
-      if not contains(n1, b1):
-        arr.append((b1, b2))
-    return arr
+  arr = []
+  for (a1, a2) in n1:
+    new_elem = (a1, a2)
+    if contains(n2, a1): 
+      new_elem = (a1, max(a2, n2[index(n2, a1)][1]))
+    arr.append(new_elem)
+  for (b1,b2) in n2:
+    if not contains(n1, b1):
+      arr.append((b1, b2))
+  return arr
 
 # gives hcf of 2 numbers; also accepts prime_factorization arrays
 def hcf(n1, n2):
@@ -255,6 +255,7 @@ def create_primes():
       prime_d[i] = 1
       arr.append(i)
     i += 2
+  print len(prime_d)
   return prime_d
 
 def create_triangle_list(n):

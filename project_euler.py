@@ -828,17 +828,35 @@ def p35():
       n = rotate(n)
     return is_prime
 
-  primes = create_primes()
+  def all_odds(s):
+    for char in s:
+      if int(char) % 2 == 0:
+        return False
+    return True
+
+  primes = sieve_of_eratosthenes(1000000)
+  primes = dict([i, 1] for i in primes)
+  # print (primes)
+  # primes = create_primes()
+  # print primes
   arr = []
-  for i in xrange(1000000):
-    if not i in primes: # not a prime number
-      continue
-    elif check_rotations(i): # i is in circular prime and not accounted for
+  for i in primes:
+    if len(str(i)) == 1:
+      arr.append(i)
+    elif all_odds(str(i)) and check_rotations(i): # i is in circular prime and not accounted for
       arr.append(i)
   # print arr
   print len(arr)
+
+  # primes = sieve_of_eratosthenes(1000000)
+  # arr = []
+  # for i in primes:
+  #   if check_rotations(i):  # i is in circular prime and not accounted for
+  #     arr.append(i)
+  #     print len(arr)
+  # print len(arr)
   
-  # print check_rotations(1013)
+  # # print check_rotations(1013)
 
 def p36():
   sum = 0
@@ -1965,6 +1983,6 @@ def p99():
 ##############################################################################
 t1 = time.time()
 
-p7()
+p35()
 
 print "< Finished in " + str(time.time() - t1) + " seconds. >"
