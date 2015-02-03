@@ -1988,6 +1988,7 @@ def p92():
   print "cnt_89 : %d" % cnt_89
   print "dictionary size : %d" % len(seen_numbers)
 
+# time 9.4 sec
 def p97():
   # last_10 = 9700303872
 
