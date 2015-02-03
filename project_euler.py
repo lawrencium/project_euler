@@ -1995,9 +1995,6 @@ def p97():
   for i in xrange(7830457):
     last_10 = str(int(last_10) * 2 )[-10:]
   print str(int(last_10) * 28433 + 1)[-10:]
-
-
-
   
 def p99():
   filepath = 'files/p99.txt'
