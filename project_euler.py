@@ -1989,25 +1989,15 @@ def p92():
   print "dictionary size : %d" % len(seen_numbers)
 
 def p97():
-  def expand_decimal(n, num_iterations):
-    def f(n, carry):
-      x = n * 10
-      return carry + str(int(x))
-    carry = ''
-    for i in xrange(num_iterations):
-      carry = f(n, carry)
-      n *= 10
-      n -= int(n)
-    return carry
+  # last_10 = 9700303872
 
-  n1 = math.log10(28433)
-  n2 = 7830457 * math.log10(2)
+  last_10 = '1'
+  for i in xrange(7830457):
+    last_10 = str(int(last_10) * 2 )[-10:]
+  print str(int(last_10) * 28433 + 1)[-10:]
 
-  n3 = n1 + n2
 
-  n4 = n3 - int(n3)
 
-  print expand_decimal(n4, 35)
   
 def p99():
   filepath = 'files/p99.txt'
@@ -2027,9 +2017,35 @@ def p99():
 
   print "line_num_largest : %i" % line_num_largest
 
+def p303():
+  def f(n):
+    def digits(n):
+      for char in str(n):
+        if int(char) > 2:
+          return False
+      return True
+    i = n
+    while True:
+      if digits(i):
+        return i
+      i += n
+
+  print f(2)
+  print f(3)
+  print f(4)
+  print f(5)
+  print f(6)
+  print f(7)
+  print f(42)
+  # cnt = 0
+  # for i in xrange(1, 100):
+  #   cnt += (f(i) / i)
+
+  # print "sum : %i" % cnt
+
 ##############################################################################
 t1 = time.time()
 
-p57()
+p97()
 
 print "< Finished in " + str(time.time() - t1) + " seconds. >"
