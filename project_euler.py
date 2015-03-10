@@ -1593,7 +1593,6 @@ def p57():
 
     print "num fractions : % i" % cnt
 
-
 def p58():
     class SpiralPrime:
         def __init__(self, side_length=1):
@@ -1800,6 +1799,25 @@ def p59():
         sum_ascii += ord(c)
     print sum_ascii
 
+def p63():
+    cnt_powerful_digits = 0
+    base = 1
+    while base < 20:
+        n = 1
+        while True:
+            num = base ** n
+            if len(str(num)) == n:
+                cnt_powerful_digits += 1
+                # print base, n, num
+                n += 1
+            elif len(str(num)) < n:
+                break
+            elif len(str(num)) > n:
+                print cnt_powerful_digits
+                return
+        base += 1
+    # print cnt_powerful_digits
+
 def p67():
     def readFile(filename):
         arr = []
@@ -1955,6 +1973,26 @@ def p82():
     print min(last_col)
     # print OPT
 
+# unsolved
+def p83():
+    def readFile(filename):
+        arr = []
+        f = open(filename)
+        for line in f:
+            nums = map(int, line.split(','));
+            arr.append(nums)
+        return arr
+
+    M = readFile('files/p83.txt')
+    OPT = []
+
+    # create OPT table initialized to all 0
+    for i in xrange(len(M)):
+        arr = []
+        for j in xrange(len(M[0])):
+            arr.append(-1)
+        OPT.append(arr)
+
 # time: 112.4 seconds
 def p92():
     seen_numbers = {}
@@ -2035,6 +2073,6 @@ def p99():
 ##############################################################################
 t1 = time.time()
 
-p82()
+p63()
 
 print "< Finished in " + str(time.time() - t1) + " seconds. >"
