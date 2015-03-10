@@ -1905,7 +1905,6 @@ def p81():
     print OPT[len(OPT) - 1][len(OPT) - 1]
     # print OPT[0][0]
 
-# unsolved
 def p82():
     def readFile(filename):
         arr = []
@@ -1915,62 +1914,46 @@ def p82():
             arr.append(nums)
         return arr
 
-    input = readFile("files/matrix.txt")
+    M = readFile("files/p82.txt")
+    # M = [[131, 673, 234, 103, 18],[201,96,342,965,150],[630, 803, 746, 422, 111], [537, 699, 497, 121, 956], [805, 732, 524, 37, 331]]
     OPT = []
 
     # create OPT table initialized to all 0
-    for i in xrange(len(input)):
+    for i in xrange(len(M)):
         arr = []
-        for j in xrange(len(input)):
+        for j in xrange(len(M[0])):
             arr.append(-1)
         OPT.append(arr)
 
     # Recurrence Relation
-    # OPT[i][j] = min(OPT[i][j-1], OPT[i-1][j], OPT[i+1][j]) + input[i,j]
+    # OPT[i][j] = min(OPT[i][j-1], OPT[i-1][j], OPT[i+1][j]) + M[i,j]
 
     # fill edge cases first
     for i in xrange(len(OPT)):
-        OPT[i][0] = input[i][0]
+        OPT[i][0] = M[i][0]
 
+    # iterate through cols
+    for col in range(1, len(OPT[0])):
+        # fill in the right-wards direction first
+        for row in range(len(OPT)):
+            OPT[row][col] = OPT[row][col-1] + M[row][col]
+        # check the downwards direction next
+        for row in range(1, len(OPT)):
+            # if row == 0:  # first row -> only check upwards direction
+            #     OPT[row][col] = min(OPT[row+1][col] + M[row][col], OPT[row][col])
+            # elif row == len(OPT) - 1: # bottom row -> only check downwards direction
+            #     OPT[row][col] = min(OPT[row-1][col] + M[row][col], OPT[row][col])
+            # else:  # check both directions
+            downwards_cost = OPT[row-1][col] + M[row][col]
+            # upwards_cost = OPT[row+1][col] + M[row][col]
+            OPT[row][col] = min(downwards_cost, OPT[row][col])
+        # check upwards direction next
+        for row in range(len(OPT) - 2, -1, -1):
+            OPT[row][col] = min(OPT[row+1][col] + M[row][col], OPT[row][col])
 
-    # fill in rest of OPT in left-ward direction
-    for j in xrange(1, len(OPT)):
-        for i in xrange(len(OPT)):
-            OPT[i][j] = OPT[i][j-1] + input[i][j]
-        for i in xrange(len(OPT)):
-            # print OPT[i][j] == OPT[i][j-1] + input[i][j]
-            if i == 0: # at top of table
-                OPT[i][j] = min(OPT[i][j-1], OPT[i+1][j]) + input[i][j]
-            elif i == len(OPT) - 1: # at bottom of table
-                OPT[i][j] = min(OPT[i][j-1], OPT[i-1][j]) + input[i][j]
-            else: # in middle of table
-                OPT[i][j] = min(OPT[i][j-1], OPT[i+1][j], OPT[i-1][j]) + input[i][j]
-
-    min_path = []
-    for i in xrange(len(OPT)):
-        min_path.append(OPT[i][-1])
-        # min_path = min(min_path, OPT[i][-1])
-
+    last_col = [l[-1] for l in OPT]
+    print min(last_col)
     # print OPT
-    print min(min_path)
-    # # fill rest of OPT
-    # for i in xrange(0,len(OPT)):
-    #   for j in xrange(0,len(OPT)):
-    #     if i < len(OPT) - 1:
-    #       OPT[i][j] = min(OPT[i][j-1], OPT[i-1][j], OPT[i+1][j]) + input[i][j]
-    #     else:
-    #       OPT[i][j] = min(OPT[i][j-1], OPT[i-1][j]) + input[i][j]
-
-    # # print OPT[len(OPT) - 1][len(OPT) - 1]
-    # # print OPT[0][0]
-    # min_path = OPT[0][-1]
-    # print min_path
-    # for i in xrange(len(OPT)):
-    #   print "i : %i\nv : %i\n" %(i, OPT[i][-1])
-    #   min_path = min (min_path, OPT[i][-1])
-
-    # # print OPT
-    # print min_path
 
 # time: 112.4 seconds
 def p92():
@@ -2052,6 +2035,6 @@ def p99():
 ##############################################################################
 t1 = time.time()
 
-p96()
+p82()
 
 print "< Finished in " + str(time.time() - t1) + " seconds. >"
