@@ -1802,7 +1802,7 @@ def p59():
 def p63():
     cnt_powerful_digits = 0
     base = 1
-    while base < 20:
+    while True:
         n = 1
         while True:
             num = base ** n
@@ -1885,6 +1885,55 @@ def p72():
 
     print "num_reduced_fractions : %d" % num_reduced_fractions
 
+def p79():
+    def read_file():
+        filename = "files/p079.txt"
+        arr = []
+        with open(filename) as f:
+            for line in f:
+                arr.append(line.strip())
+        return arr
+
+    def get_all_vals():
+        vals = []
+        for passcode in passcodes:
+            for val in passcode:
+                if val not in vals:
+                    vals.append(val)
+        return ''.join(vals)
+
+    def get_first_val():
+        all_vals = list(get_all_vals())
+        for passcode in passcodes:
+            if passcode[1] in all_vals:
+                all_vals.remove(passcode[1])
+            if passcode[2] in all_vals:
+                all_vals.remove(passcode[2])
+        return all_vals
+
+    def get_last_val():
+        all_vals = list(get_all_vals())
+        for passcode in passcodes:
+            if passcode[0] in all_vals:
+                all_vals.remove(passcode[0])
+            if passcode[1] in all_vals:
+                all_vals.remove(passcode[1])
+        return all_vals
+
+    def remove_unhelpful_passcodes():
+        pcodes = list(passcodes)
+        first_val = get_first_val()
+        last_val = get_last_val()
+        for passcode in passcodes:
+            if passcode[0] == first_val and last_val == passcode[2]:
+                pcodes.remove(passcode)
+        return pcodes
+
+    passcodes = read_file()
+    p_code = get_first_val()
+    p_code += get_last_val()
+    print len(get_all_vals())
+
 def p81():
     def readFile(filename):
         arr = []
@@ -1957,13 +2006,7 @@ def p82():
             OPT[row][col] = OPT[row][col-1] + M[row][col]
         # check the downwards direction next
         for row in range(1, len(OPT)):
-            # if row == 0:  # first row -> only check upwards direction
-            #     OPT[row][col] = min(OPT[row+1][col] + M[row][col], OPT[row][col])
-            # elif row == len(OPT) - 1: # bottom row -> only check downwards direction
-            #     OPT[row][col] = min(OPT[row-1][col] + M[row][col], OPT[row][col])
-            # else:  # check both directions
             downwards_cost = OPT[row-1][col] + M[row][col]
-            # upwards_cost = OPT[row+1][col] + M[row][col]
             OPT[row][col] = min(downwards_cost, OPT[row][col])
         # check upwards direction next
         for row in range(len(OPT) - 2, -1, -1):
@@ -1971,9 +2014,7 @@ def p82():
 
     last_col = [l[-1] for l in OPT]
     print min(last_col)
-    # print OPT
 
-# unsolved
 def p83():
     def readFile(filename):
         arr = []
@@ -1992,6 +2033,52 @@ def p83():
         for j in xrange(len(M[0])):
             arr.append(-1)
         OPT.append(arr)
+
+    def dijkstras(graph, start_node):
+        def get_adjacent_nodes((i,j)):
+            es = [(i+1, j), (i-1, j), (i, j-1), (i, j+1)]
+            return filter(lambda ((x, y)): x >= 0 and x < len(graph) and y >= 0 and y < len(graph[0]), es)
+        def is_adjacent((i1,j1), (i2,j2)):
+            return (abs(i1 - i2) == 1 and j1 == j2) or (i1 == i2 and abs(j1 - j2) == 1)
+        def get_minimum_from_S():
+            min_dist = sys.maxint
+            node = None
+            for v in S:
+                if D[v] < min_dist:
+                    min_dist = D[v]
+                    node = v
+            if min_dist == sys.maxint:
+                raise Exception("Error: no path exists to nodes in S")
+            return node, min_dist
+
+        # initialize tables
+        D = {}
+        S = { (i, j) for i in range(len(graph)) for j in range(len(graph[0])) if (i or j) }
+
+        # set initial distances
+        for v in S:
+            if is_adjacent(start_node, v):
+                D[v] = M[v[0]][v[1]]
+                # R[v] = [start_node]
+            else:
+                D[v] = sys.maxint
+                # R[v] = []
+        while S:  # while S is not empty
+            u, min_dist = get_minimum_from_S()
+
+            S.remove(u)
+            adjacent_nodes = get_adjacent_nodes(u)
+            for node in adjacent_nodes:
+                if node in S:
+                    i, j = node
+                    c = D[u] + M[i][j]
+                    if c < D[node]:
+                        D[node] = c
+        end_node = len(graph)-1, len(graph[0])-1
+        i1, j1 = start_node
+        print D[end_node] + M[i1][j1]
+    start_node = (0,0)
+    dijkstras(M, start_node)
 
 # time: 112.4 seconds
 def p92():
@@ -2073,6 +2160,6 @@ def p99():
 ##############################################################################
 t1 = time.time()
 
-p63()
+p83()
 
 print "< Finished in " + str(time.time() - t1) + " seconds. >"
