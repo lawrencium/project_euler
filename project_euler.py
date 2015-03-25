@@ -1885,6 +1885,31 @@ def p72():
 
     print "num_reduced_fractions : %d" % num_reduced_fractions
 
+def p76():
+    # use dynamic programming
+    num_ways = {}
+    partial_sums = [i for i in range(1, 100)]
+    def count_combos(sum, partial_sums):
+        if sum == 0:
+            return 1
+        elif sum in num_ways and len(partial_sums) in num_ways[sum]:
+            return num_ways[sum][len(partial_sums)]
+        elif sum < 0:
+            return 0
+        elif partial_sums == []:
+            return 0
+        else:
+            sum_excluding = count_combos(sum, partial_sums[1:])
+            sum_including = count_combos(sum - partial_sums[0], partial_sums)
+            if sum in num_ways:
+                num_ways[sum][len(partial_sums)] = sum_excluding + sum_including
+            else:
+                num_ways[sum] = {len(partial_sums) : sum_excluding + sum_including}
+            # print num_ways
+            return sum_excluding + sum_including
+
+    print count_combos(100, partial_sums)
+
 def p79():
     def read_file():
         filename = "files/p079.txt"
@@ -2160,6 +2185,6 @@ def p99():
 ##############################################################################
 t1 = time.time()
 
-p83()
+p76()
 
 print "< Finished in " + str(time.time() - t1) + " seconds. >"
