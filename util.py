@@ -10,6 +10,31 @@ import sudoku
 def choose (a, b):
     return math.factorial(a) / (math.factorial (b) * math.factorial(a - b))
 
+""" returns the number of ways to sum to `n` given the values in `values` """
+def count_combinations(n, values):
+    num_ways = {}
+    def count_combos(sum, values):
+        if sum == 0:
+            return 1
+        elif sum in num_ways and len(values) in num_ways[sum]:
+            return num_ways[sum][len(values)]
+        elif sum < 0:
+            return 0
+        elif values == []:
+            return 0
+        else:
+            sum_excluding = count_combos(sum, values[1:])
+            sum_including = count_combos(sum - values[0], values)
+            if sum in num_ways:
+                num_ways[sum][len(values)] = sum_excluding + sum_including
+            else:
+                num_ways[sum] = {len(values) : sum_excluding + sum_including}
+            # print num_ways
+            return sum_excluding + sum_including
+
+    return count_combos(n, values)
+
+
 # returns all primes less than or equal to n
 def sieve_of_eratosthenes(n):
     sieve = [True for i in xrange((n-1)/2 + 1)] # gets

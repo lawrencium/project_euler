@@ -657,27 +657,7 @@ def p30():
 def p31():
     # use dynamic programming
     coins = [1, 2, 5, 10, 20, 50, 100, 200]
-    num_ways = {}
-
-    def count_combos(sum, coins):
-        if sum == 0:
-            return 1
-        elif sum in num_ways and len(coins) in num_ways[sum]:
-            return num_ways[sum][len(coins)]
-        elif sum < 0:
-            return 0
-        elif coins == []:
-            return 0
-        else:
-            sum_excluding = count_combos(sum, coins[1:])
-            sum_including = count_combos(sum - coins[0], coins)
-            if sum in num_ways:
-                num_ways[sum][len(coins)] = sum_excluding + sum_including
-            else:
-                num_ways[sum] = {len(coins) : sum_excluding + sum_including}
-            return sum_excluding + sum_including
-
-    print count_combos(200, coins)
+    print count_combinations(200, coins)
 
 # time 48.6 seconds
 def p32():
@@ -1846,6 +1826,28 @@ def p67():
 
     print max(OPT[len(OPT)-1])
 
+def p69():
+    calculated_totients = {}
+    def totient(n):
+        """ gives relative prime values of n where all values are <= n """
+        if n in calculated_totients:
+            return calculated_totients[n]
+        else:  # need to calculate
+            p_factorization = prime_factorization(n)
+            if len(p_factorization) == 1:
+                if p_factorization[p_factorization.keys()[0]] == 1:  # number is prime
+                    return [i for i in range(1, n)]
+            multiples = p_factorization.keys()
+            print multiples
+            partial_relative_primes = totient(multiples[0])
+            for i in multiples[1:]:
+
+                partial_relative_primes = set_intersection(partial_relative_primes, totient(i))
+            print partial_relative_primes
+
+    totient(12)
+    print calculated_totients
+
 def p71():
     def check_conditions(n, d, distance):
         a = hcf(n, d) == 1
@@ -1887,28 +1889,40 @@ def p72():
 
 def p76():
     # use dynamic programming
+    print count_combinations(100, [i for i in range(1, 100)])
+
+def p78():
+    n = 60
+    max_val = 990
+    vals = [i for i in range(1, max_val)]
     num_ways = {}
-    partial_sums = [i for i in range(1, 100)]
-    def count_combos(sum, partial_sums):
+    def count_combos(sum, values):
         if sum == 0:
             return 1
-        elif sum in num_ways and len(partial_sums) in num_ways[sum]:
-            return num_ways[sum][len(partial_sums)]
+        elif sum in num_ways and len(values) in num_ways[sum]:
+            return num_ways[sum][len(values)]
         elif sum < 0:
             return 0
-        elif partial_sums == []:
+        elif values == []:
             return 0
         else:
-            sum_excluding = count_combos(sum, partial_sums[1:])
-            sum_including = count_combos(sum - partial_sums[0], partial_sums)
+            sum_excluding = count_combos(sum, values[1:])
+            sum_including = count_combos(sum - values[0], values)
             if sum in num_ways:
-                num_ways[sum][len(partial_sums)] = sum_excluding + sum_including
+                num_ways[sum][len(values)] = sum_excluding + sum_including
             else:
-                num_ways[sum] = {len(partial_sums) : sum_excluding + sum_including}
+                num_ways[sum] = {len(values) : sum_excluding + sum_including}
             # print num_ways
             return sum_excluding + sum_including
-
-    print count_combos(100, partial_sums)
+    while n < max_val:
+        # print n
+        if count_combos(n, vals) % 1000000 == 0:
+            print n
+            break
+        n += 1
+    raise Exception("Need to increase range.")
+    # print count_combinations(900, [i for i in range(1, 901)])
+    # print count_combinations(901, [i for i in range(1, 902)])
 
 def p79():
     def read_file():
@@ -1919,45 +1933,42 @@ def p79():
                 arr.append(line.strip())
         return arr
 
-    def get_all_vals():
+    def get_all_vals(passcodes):
         vals = []
         for passcode in passcodes:
             for val in passcode:
                 if val not in vals:
                     vals.append(val)
-        return ''.join(vals)
+        return (vals)
 
-    def get_first_val():
-        all_vals = list(get_all_vals())
-        for passcode in passcodes:
-            if passcode[1] in all_vals:
-                all_vals.remove(passcode[1])
-            if passcode[2] in all_vals:
-                all_vals.remove(passcode[2])
-        return all_vals
+    def get_next_val(partial_solution, passcodes):
+        all_vals = set_subtraction(get_all_vals(passcodes), partial_solution)
+        for entry in passcodes:
+            if entry[0] in partial_solution:  # ind1 is candidate for next val
+                if entry[1] in partial_solution:  # ind2 is candidate for next val
+                    if entry[2] in partial_solution:
+                        continue
+                else:  # ind1 is not in partial_solution --> remove ind2 from all_vals
+                    if entry[2] in all_vals:
+                        all_vals.remove(entry[2])
+            else:  # ind0 is not in partial solution --> remove ind1 and ind2 from all_Vals
+                if entry[1] in all_vals:
+                    all_vals.remove(entry[1])
+                if entry[2] in all_vals:
+                    all_vals.remove(entry[2])
+        if len(all_vals) > 1:
+            print all_vals
+            raise Exception('More than 1 possible next value')
+        return ''.join(all_vals)
 
-    def get_last_val():
-        all_vals = list(get_all_vals())
-        for passcode in passcodes:
-            if passcode[0] in all_vals:
-                all_vals.remove(passcode[0])
-            if passcode[1] in all_vals:
-                all_vals.remove(passcode[1])
-        return all_vals
-
-    def remove_unhelpful_passcodes():
-        pcodes = list(passcodes)
-        first_val = get_first_val()
-        last_val = get_last_val()
-        for passcode in passcodes:
-            if passcode[0] == first_val and last_val == passcode[2]:
-                pcodes.remove(passcode)
-        return pcodes
-
-    passcodes = read_file()
-    p_code = get_first_val()
-    p_code += get_last_val()
-    print len(get_all_vals())
+    passcodes = list(set(read_file()))
+    partial_passcode = []
+    next_val = get_next_val(partial_passcode, passcodes)
+    while next_val:
+        partial_passcode.append(next_val)
+        next_val = get_next_val(partial_passcode, passcodes)
+    print ''.join(partial_passcode)
+    # print passcodes
 
 def p81():
     def readFile(filename):
@@ -2185,6 +2196,7 @@ def p99():
 ##############################################################################
 t1 = time.time()
 
-p76()
+# p69()
+p79()
 
 print "< Finished in " + str(time.time() - t1) + " seconds. >"
