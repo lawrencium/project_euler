@@ -6,6 +6,7 @@
 
 import sys
 from util import *
+import util
 
 # time: 0.00031 seconds
 def p1():
@@ -1826,6 +1827,7 @@ def p67():
 
     print max(OPT[len(OPT)-1])
 
+# unsolved
 def p69():
     calculated_totients = {}
     def totient(n):
@@ -2116,6 +2118,148 @@ def p83():
     start_node = (0,0)
     dijkstras(M, start_node)
 
+def p84():
+    def roll():
+        roll1, roll2 = random.randint(1,4), random.randint(1,4)
+        return (roll1 + roll2, roll1 == roll2)
+
+    class Monopoly(object):
+        """represents a Monopoly game"""
+
+        COMMUNITY_CHEST_INDS = [2, 17, 33]
+        CHANCE_INDS = [7, 22, 36]
+        RAILROAD_INDS = [5, 15, 25, 35]
+        UTILITY_INDS = [12, 28]
+        G2J_IND = [30]
+        JAIL_IND = 10
+
+        def __init__(self):
+            self.player = 0
+            self.past_rolls = (False, False)  # ind0 is previous roll and ind1 is the roll before that
+                                              # value is 1 if the roll was double and 0 otherwise
+            self.initialize_community_chest()
+            self.initialize_chance()
+
+        def initialize_chance(self):
+            """
+                initializes the chance deck and shuffles
+                6 cards that do not affect movement
+                10 cards that affect movement
+            """
+            def next_u(location):
+                """
+                    returns the location of the next utility company
+                """
+                u1, u2 = Monopoly.UTILITY_INDS
+                if location > u1 and location < u2:
+                    return u2
+                else:
+                    return u1
+            def next_rr(location):
+                """
+                    returns the location of the next railroad
+                """
+                for rr_ind in Monopoly.RAILROAD_INDS:
+                    if location < rr_ind:
+                        return rr_ind
+                # if here, then location is between 36 and 39 --> should go to rr1
+                return Monopoly.RAILROAD_INDS[0]
+
+            self.current_ch_card = 0
+            self.chance_deck = [lambda x: x for i in range(6)]  # initialize 6 cards that don't affect movement
+            self.chance_deck.append(lambda x: 0)  # advance to GO
+            self.chance_deck.append(lambda x: Monopoly.G2J_IND[0])  # go to jail
+            self.chance_deck.append(lambda x: 11)  # go to C1
+            self.chance_deck.append(lambda x: 24)  # go to E3
+            self.chance_deck.append(lambda x: 39)  # go to H2
+            self.chance_deck.append(lambda x: Monopoly.RAILROAD_INDS[0])  # go to R1
+            self.chance_deck.append(next_rr)  # go to next rr
+            self.chance_deck.append(next_rr)  # go to next rr
+            self.chance_deck.append(next_u)  # go to next utility comp
+            self.chance_deck.append(lambda x: x - 3)  # go back 3 spaces
+            random.shuffle(self.chance_deck)
+
+
+        def initialize_community_chest(self):
+            """
+                initializes the community chest deck and shuffles
+                14 cards that do not affect movement
+                2 cards that affect movement
+            """
+            self.current_cc_card = 0
+            self.community_chest_deck = [lambda x: x for i in range (14)]  # initialize 14 cards that don't affect movement
+            self.community_chest_deck.append((lambda x: 0))  # advance to GO
+            self.community_chest_deck.append((lambda x: Monopoly.G2J_IND[0]))  # go to jail
+            random.shuffle(self.community_chest_deck)
+
+        def jail(self):
+            """
+                sends the player to jail by changing player's location,
+                resetting past_rolls and returns player's location (jail)
+            """
+            self.player = Monopoly.JAIL_IND  # send player to jail
+            self.past_rolls = (False, False)  # reset consecutive double log
+            return self.player
+
+        def check_square(self):
+            """
+                checks the square that the player is on and handles any special situations
+                (like community chest, chance, g2j, etc...)
+                returns the final square ind of the player
+            """
+            original_square = self.player
+            if self.player in Monopoly.COMMUNITY_CHEST_INDS:  # landed on comm chest
+                # draw a card
+                cc_function = self.community_chest_deck[self.current_cc_card % 16]
+                self.current_cc_card += 1  # increment counter
+                self.player = cc_function(original_square)  # apply card
+                if self.player != original_square:  # drew card that involved movement
+                    # --> need to check if on another special square
+                    return self.check_square()
+                else:  # card did not involve movement
+                    return self.player
+            elif self.player in Monopoly.CHANCE_INDS:  # landed on chance
+                # draw a card
+                ch_function = self.chance_deck[self.current_ch_card % 16]
+                self.current_ch_card += 1  # increment counter
+                self.player = ch_function(original_square)  # apply card
+                if self.player != original_square:  # drew a card that involved movement
+                    # --> need to check if on another special square
+                    return self.check_square()
+                else:  # card didn't involve movement
+                    return self.player
+            elif self.player in Monopoly.G2J_IND:  # landed on go-to-jail
+                # go to jail --> move self.player to jail
+                return self.jail()
+            else:  # landed on normal square
+                return self.player
+
+        def one_turn(self):
+            """ simulates a roll of monopoly
+                --> returns the square that the player is on at the end of the turn """
+            rolled_value, is_double = roll()
+            if self.past_rolls[0] and self.past_rolls[1] and is_double:  # 3 consecutive doubles --> go to jail
+                return self.jail()
+            else:  # did not roll 3 consecutive doubles
+                self.player = (self.player + rolled_value) % 40  # move player
+                self.past_rolls = (is_double, self.past_rolls[0])  # update past_rolls
+
+                return self.check_square()  # check the square the player is on
+
+    monopoly = Monopoly()
+    squares = [0 for i in range(40)]
+    num_iter = 500000
+    for i in xrange(num_iter):
+        squares[monopoly.one_turn()] += 1
+    squares_as_prob = map(lambda x: x / float(num_iter), squares)
+    dir_ind = {}
+    for i in range(len(squares_as_prob)):  # build index (k = prob, v = square_ind)
+        dir_ind[squares_as_prob[i]] = i
+    # for i in sorted(squares_as_prob, reverse=True):
+    #     print dir_ind[i]
+    print map(lambda x: dir_ind[x], sorted(squares_as_prob, reverse=True)[:10])
+
+
 # time: 112.4 seconds
 def p92():
     seen_numbers = {}
@@ -2197,6 +2341,6 @@ def p99():
 t1 = time.time()
 
 # p69()
-p79()
+p84()
 
 print "< Finished in " + str(time.time() - t1) + " seconds. >"

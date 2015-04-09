@@ -3,6 +3,7 @@ import copy
 import calendar # for p19()
 import decimal  # for p26()
 import operator # for p59()
+import random
 from fractions import Fraction # for p57()
 import sudoku
 
