@@ -7,6 +7,15 @@ import random
 from fractions import Fraction # for p57()
 import sudoku
 
+def gcd(n1, n2):
+    """
+        returns the GCD of n1 and n2 using the euclidean algorithm
+    """
+    if n2:  # n2 is non-zero
+        return gcd(n2, n1 % n2)
+    else:  # n2 is zero
+        return n1
+
 """ choose function in the form a Cr b """
 def choose (a, b):
     return math.factorial(a) / (math.factorial (b) * math.factorial(a - b))

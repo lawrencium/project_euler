@@ -1831,24 +1831,23 @@ def p67():
 def p69():
     calculated_totients = {}
     def totient(n):
-        """ gives relative prime values of n where all values are <= n """
-        if n in calculated_totients:
-            return calculated_totients[n]
-        else:  # need to calculate
-            p_factorization = prime_factorization(n)
-            if len(p_factorization) == 1:
-                if p_factorization[p_factorization.keys()[0]] == 1:  # number is prime
-                    return [i for i in range(1, n)]
-            multiples = p_factorization.keys()
-            print multiples
-            partial_relative_primes = totient(multiples[0])
-            for i in multiples[1:]:
+        partial_totients = []
+        for i in range(1,n):
+            if util.gcd(n, i) == 1:
+                partial_totients.append(i)
+        calculated_totients[n] = partial_totients  # memoize
+        return partial_totients
 
-                partial_relative_primes = set_intersection(partial_relative_primes, totient(i))
-            print partial_relative_primes
+    n = 125
+    print float(n) / len(totient(n))
+    # n, max_val = (6, 3)
+    # for i in xrange(2, 1000000 + 1):
+    #     if (i % 1000 == 0): print i
+    #     val = n / float(len(totient(i)))
+    #     if val > max_val:
+    #         n, max_val = i, val
+    # print n
 
-    totient(12)
-    print calculated_totients
 
 def p71():
     def check_conditions(n, d, distance):
@@ -2257,7 +2256,9 @@ def p84():
         dir_ind[squares_as_prob[i]] = i
     # for i in sorted(squares_as_prob, reverse=True):
     #     print dir_ind[i]
-    print map(lambda x: dir_ind[x], sorted(squares_as_prob, reverse=True)[:10])
+    sorted_probs = sorted(squares_as_prob, reverse=True)[:10]
+    print sorted_probs
+    print map(lambda x: dir_ind[x], sorted_probs)
 
 
 # time: 112.4 seconds
@@ -2337,10 +2338,72 @@ def p99():
 
     print "line_num_largest : %i" % line_num_largest
 
+def p107():
+    def read_file():
+        matrix = []
+        with open('files/p107_network.txt') as f:
+            for line in f:
+                row = map(lambda x: int(x), line.replace('-', '0').split(','))
+                matrix.append(row)
+        return matrix
+
+    def get_sum_edges(network):
+        sum = 0
+        for row in network:
+            for col in row:
+                sum += col
+        return sum / 2
+
+    def prims(network):
+        """
+            returns the cost of the minimum spanning tree (using Prim's algo)
+            input: adjacency matrix
+            output: sum of edges of the min. spanning tree
+        """
+        visited_nodes = [0]  # start with an arbitrary node
+        cost = 0
+        while len(visited_nodes) != len(network):
+            unvisited_nodes = [i for i in range(len(network)) if i not in visited_nodes]
+            # find the lowest cost edge between a visited and unvisited node
+            new_node, min_cost = None, sys.maxint
+            for visited_node in visited_nodes:
+                for unvisited_node in unvisited_nodes:
+                    edge_cost = network[visited_node][unvisited_node]
+                    if edge_cost and edge_cost < min_cost:
+                        new_node, min_cost = unvisited_node, edge_cost
+
+            if new_node:  # found a new node to add to frontier
+                # add new_node to visited_nodes
+                visited_nodes.append(new_node)
+                cost += min_cost
+            else:  # could not find a new node to add to frontier
+                # throw an error
+                raise Exception('Graph is not connected --> could not complete minimum spanning tree')
+        return cost
+
+
+
+
+    network = read_file()
+    # network = [
+    #             [0, 16, 12, 21, 0, 0, 0],
+    #             [16, 0, 0, 17, 20, 0, 0],
+    #             [12, 0, 0, 28, 0, 31, 0],
+    #             [21, 17, 28, 0, 18, 19, 23],
+    #             [0, 20, 0, 18, 0, 0, 11],
+    #             [0, 0, 31, 19, 0, 0, 27],
+    #             [0, 0, 0, 23, 11, 27, 0]
+    #         ]
+    original_sum = get_sum_edges(network)
+    print original_sum
+    min_span_tree_sum = prims(network)
+    print min_span_tree_sum
+    print original_sum - min_span_tree_sum
+
+
 ##############################################################################
 t1 = time.time()
 
-# p69()
-p84()
+p107()
 
 print "< Finished in " + str(time.time() - t1) + " seconds. >"
