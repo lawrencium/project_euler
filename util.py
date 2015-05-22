@@ -47,6 +47,8 @@ def count_combinations(n, values):
 
 # returns all primes less than or equal to n
 def sieve_of_eratosthenes(n):
+    if n < 2:
+        return []
     sieve = [True for i in xrange((n-1)/2 + 1)] # gets
 
     for sieve_ind in xrange(1, len(sieve)):
@@ -56,7 +58,7 @@ def sieve_of_eratosthenes(n):
             for composite in xrange(val_at_ind + 2*val_at_ind, n + 1, 2*val_at_ind):
                 composite_ind = (composite - 1) / 2
                 sieve[composite_ind] = False
-    print sieve
+    # print sieve
     return [2] + [2*i + 1 for i in xrange(1, len(sieve)) if sieve[i]]
 
 # solves the quadratic equation ax^2 + bx + c = 0

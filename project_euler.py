@@ -658,7 +658,7 @@ def p30():
 def p31():
     # use dynamic programming
     coins = [1, 2, 5, 10, 20, 50, 100, 200]
-    print count_combinations(200, coins)
+    print util.count_combinations(200, coins)
 
 # time 48.6 seconds
 def p32():
@@ -1226,6 +1226,28 @@ def p50():
     # print OPT
     print "Done. Max_prime is %d" % max_prime
 
+def p51():
+    prime_nums =  filter(lambda x: x >= 10000, util.sieve_of_eratosthenes(99999))
+
+    def build_index(prime_list, ind):
+        d = {}
+        for p in prime_list:
+            p_string = str(p)
+            p_val_at_ind = p_string[ind]
+            if p_val_at_ind in d:
+                d[p_val_at_ind] += 1
+            else:
+                d[p_val_at_ind] = 1
+        return d
+
+    def only_dups(prime_list):
+        primes = []
+        for p in prime_list:
+            if len(str(p)) != len(set(str(p))):  # prime number contains dups
+                primes.append(p)
+        return primes
+    print len(prime_nums)
+    print len(only_dups(prime_nums))
 def p52():
     def same_ints(i1, i2):
         return sorted(str(i1)) == sorted(str(i2))
@@ -1848,7 +1870,6 @@ def p69():
     #         n, max_val = i, val
     # print n
 
-
 def p71():
     def check_conditions(n, d, distance):
         a = hcf(n, d) == 1
@@ -1891,6 +1912,15 @@ def p72():
 def p76():
     # use dynamic programming
     print count_combinations(100, [i for i in range(1, 100)])
+
+def p77():
+    n = 10
+    while True:
+        if util.count_combinations(n, util.sieve_of_eratosthenes(n)) > 5000:
+            print n
+            return
+        else:
+            n += 1
 
 def p78():
     n = 60
@@ -2260,7 +2290,6 @@ def p84():
     print sorted_probs
     print map(lambda x: dir_ind[x], sorted_probs)
 
-
 # time: 112.4 seconds
 def p92():
     seen_numbers = {}
@@ -2381,9 +2410,6 @@ def p107():
                 raise Exception('Graph is not connected --> could not complete minimum spanning tree')
         return cost
 
-
-
-
     network = read_file()
     # network = [
     #             [0, 16, 12, 21, 0, 0, 0],
@@ -2404,6 +2430,6 @@ def p107():
 ##############################################################################
 t1 = time.time()
 
-p107()
+p77()
 
 print "< Finished in " + str(time.time() - t1) + " seconds. >"
