@@ -1,11 +1,6 @@
-import math, time
-import copy
-import calendar # for p19()
-import decimal  # for p26()
-import operator # for p59()
-import random
+import math
 from fractions import Fraction # for p57()
-import sudoku
+
 
 def gcd(n1, n2):
     """
@@ -39,6 +34,7 @@ def count_combinations(n, values):
                 num_ways[sum][len(values)] = sum_excluding + sum_including
             else:
                 num_ways[sum] = {len(values) : sum_excluding + sum_including}
+            # print num_ways
             # print num_ways
             return sum_excluding + sum_including
 
