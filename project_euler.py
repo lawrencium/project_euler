@@ -8,7 +8,6 @@ import sys
 from util import *
 import util
 
-# time: 0.00031 seconds
 def p1():
     i = 1;
     sum = 0;
@@ -18,7 +17,6 @@ def p1():
         i += 1;
     print sum
 
-# time: 4.3e-5 seconds
 def p2():
     target = 4000000
     arr = fibonacci(target);
@@ -28,7 +26,6 @@ def p2():
             sum += i
     print sum
 
-# time: 0.023 seconds
 def p3():
     target = 997799
     i = 2;
@@ -40,7 +37,6 @@ def p3():
         i+=1
     print largest_prime
 
-# time: 0.8212 seconds
 def p4():
     largest_pali = 9009
     for i in xrange(999):
@@ -51,7 +47,6 @@ def p4():
                 break
     print largest_pali
 
-# time: 0.00015 seconds
 def p5():
     sm_factorization = prime(2520)
     for x in xrange(11, 20):
@@ -59,7 +54,6 @@ def p5():
         sm_factorization = lcm(sm_factorization, tmp)
     print wrap(sm_factorization)
 
-# time: 4.7922e-5 seconds
 def p6():
 
     print 5050**2 - sum_squares(100)
@@ -654,13 +648,11 @@ def p30():
             tot += i
     print tot
 
-# time .004 seconds
 def p31():
     # use dynamic programming
     coins = [1, 2, 5, 10, 20, 50, 100, 200]
     print util.count_combinations(200, coins)
 
-# time 48.6 seconds
 def p32():
     def power_set(l):
         size = len(l)
@@ -875,7 +867,6 @@ def p37():
     print arr
     sum_array(arr)
 
-# time : 0.004 seconds
 def p38():
     # PANDIGITAL_DIGITS = [1, 2, 3, 4, 5, 6, 7, 8 9]
 
@@ -1271,7 +1262,6 @@ def p53():
                     cnt += 2
     print cnt
 
-# time: 0.065 seconds
 def p54():
     ROYAL_FLUSH     = 9
     STRAIGHT_FLUSH  = 8
@@ -1923,37 +1913,40 @@ def p77():
             n += 1
 
 def p78():
-    n = 60
-    max_val = 990
-    vals = [i for i in range(1, max_val)]
-    num_ways = {}
+    # n = 990
+    # max_val = 1000
+    # vals = [i for i in range(1, max_val)]
+    # num_ways = {}
     def count_combos(sum, values):
-        if sum == 0:
-            return 1
-        elif sum in num_ways and len(values) in num_ways[sum]:
-            return num_ways[sum][len(values)]
-        elif sum < 0:
-            return 0
-        elif values == []:
-            return 0
-        else:
-            sum_excluding = count_combos(sum, values[1:])
-            sum_including = count_combos(sum - values[0], values)
-            if sum in num_ways:
-                num_ways[sum][len(values)] = sum_excluding + sum_including
-            else:
-                num_ways[sum] = {len(values) : sum_excluding + sum_including}
-            # print num_ways
-            return sum_excluding + sum_including
-    while n < max_val:
-        # print n
-        if count_combos(n, vals) % 1000000 == 0:
-            print n
-            break
-        n += 1
-    raise Exception("Need to increase range.")
-    # print count_combinations(900, [i for i in range(1, 901)])
-    # print count_combinations(901, [i for i in range(1, 902)])
+        return util.count_combinations(sum, values) + 1
+    #     # if sum == 0:
+    #     #     return 1
+    #     # elif sum in num_ways and len(values) in num_ways[sum]:
+    #     #     return num_ways[sum][len(values)]
+    #     # elif sum < 0:
+    #     #     return 0
+    #     # elif values == []:
+    #     #     return 0
+    #     # else:
+    #     #     sum_excluding = count_combos(sum, values[1:])
+    #     #     sum_including = count_combos(sum - values[0], values)
+    #     #     if sum in num_ways:
+    #     #         num_ways[sum][len(values)] = sum_excluding + sum_including
+    #     #     else:
+    #     #         num_ways[sum] = {len(values) : sum_excluding + sum_including}
+    #     #     # print num_ways
+    #     #     return sum_excluding + sum_including
+    # while n < max_val:
+    #     # print n
+    #     if count_combos(n, vals) % 1000000 == 0:
+    #         print n
+    #         break
+    #     n += 1
+    # raise Exception("Need to increase range.")
+
+    print count_combos(5, [i for i in range(1, 5)])
+    print count_combos(6, [i for i in range(1, 6)])
+    print count_combos(7, [i for i in range(1, 7)])
 
 def p79():
     def read_file():
@@ -2290,7 +2283,6 @@ def p84():
     print sorted_probs
     print map(lambda x: dir_ind[x], sorted_probs)
 
-# time: 112.4 seconds
 def p92():
     seen_numbers = {}
     cnt_89 = 0
@@ -2340,7 +2332,6 @@ def p96():
         sum_top_left += sudoku.sum_top_left(result)
     print sum_top_left
 
-# time 9.4 sec
 def p97():
     # last_10 = 9700303872
 
@@ -2430,6 +2421,6 @@ def p107():
 ##############################################################################
 t1 = time.time()
 
-p77()
+p78()
 
 print "< Finished in " + str(time.time() - t1) + " seconds. >"
