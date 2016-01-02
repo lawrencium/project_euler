@@ -1,4 +1,16 @@
-I like to do Project Euler problems during my spare time. Here are my solutions to some of the problems
-(found here: https://projecteuler.net/archives). This repo contains an old_solutions directory which contains the very
-first problems that I worked on, which I think is fun to revisit every once in a while to see how my coding style has
-changed over time.
+I like to do Project Euler problems during my spare time. Here are my solutions to some of the problems (found here: https://projecteuler.net/archives). This repo contains an old_solutions directory which contains the very first problems that I worked on, which I think is fun to revisit every once in a while to see how my coding style has changed over time.
+
+old_solutions contains implementations for the following problems:
+# 1~50
+# 52~59
+# 63
+# 67
+# 76~77
+# 79
+# 81~84
+# 92
+# 96~97
+# 99
+# 107
+
+All other problems I've solved can be found in the directory p<problem-number>.
