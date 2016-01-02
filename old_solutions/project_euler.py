@@ -2539,9 +2539,8 @@ def p107():
 
 
 ##############################################################################
-if __name__ == '__main__':
-    t1 = time.time()
+t1 = time.time()
 
-    p96()
+p96()
 
-    print "< Finished in " + str(time.time() - t1) + " seconds. >"
+print "< Finished in " + str(time.time() - t1) + " seconds. >"
