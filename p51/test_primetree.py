@@ -7,6 +7,40 @@ from p51.primetrie import PrimeDigitTrie, PrimeLeafNode, PrimeIndexNode, InsertI
 __author__ = 'lawrencechen'
 
 
+class PrimeDigitTrieTest(unittest.TestCase):
+    def setUp(self):
+        self.trie = PrimeDigitTrie(5)
+
+    def test_single_level_tree_returns_inserted_value_on_single_insert(self):
+        assert_that(PrimeDigitTrie(1).insert(5).smallest_value).is_equal_to(5)
+
+    def test_multi_level_tree_returns_inserted_value_on_single(self):
+        value_to_insert = 12345
+        assert_that(self.trie.insert(value_to_insert).smallest_value).is_equal_to(value_to_insert)
+
+    def test_count_increments_when_inserting_to_same_leaf_node(self):
+        value_to_insert = 12345
+        self.trie.insert(value_to_insert)
+        assert_that(self.trie.insert(value_to_insert).count).is_equal_to(2)
+
+    def test_insert_with_duplicates_does_not_crash(self):
+        self.trie.insert(55556)
+
+    def test_single_insert_with_duplicates_returns_itself(self):
+        family = self.trie.insert(56333)
+        assert_that(family.smallest_value).is_equal_to(56333)
+
+    def test_seven_prime_family(self):
+        inserts = [56003, 56113, 56333, 56443, 56663, 56773]
+        [self.trie.insert(i) for i in inserts]
+
+        family = self.trie.insert(56993)
+        assert_that(family.count).is_equal_to(7)
+        assert_that(family.smallest_value).is_equal_to(56003)
+
+
+
+
 class PrimeDigitTrieInitializationTest(unittest.TestCase):
     def test_prime_tree_has_leaf_node_root_if_levels_is_one(self):
         assert_that(PrimeDigitTrie(1)._root).is_type_of(PrimeLeafNode)
