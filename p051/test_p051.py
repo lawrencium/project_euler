@@ -2,7 +2,7 @@ import unittest
 
 from assertpy import assert_that
 
-from p51.p51_solution import permute_families
+from p051.p051_solution import permute_families
 
 __author__ = 'lawrencechen'
 
