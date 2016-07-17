@@ -2,7 +2,7 @@ import unittest
 
 from assertpy import assert_that
 
-from p145.p145_solution import reverse_number, naive_check_reversibility, sum_contains_all_odd_digits
+from p145.p145_solution import reverse_number, naive_check, sum_contains_all_odd_digits
 
 
 class P145Test(unittest.TestCase):
@@ -19,7 +19,7 @@ class P145Test(unittest.TestCase):
         assert_that(sum_contains_all_odd_digits(11, 21)).is_false()
 
     def test_is_reversible_on_reversible_number_returns_true(self):
-        assert_that(naive_check_reversibility(36)).is_true()
+        assert_that(naive_check(36)).is_true()
 
     def test_is_reversible_on_non_reversible_number_returns_false(self):
-        assert_that(naive_check_reversibility(123)).is_false()
+        assert_that(naive_check(123)).is_false()
