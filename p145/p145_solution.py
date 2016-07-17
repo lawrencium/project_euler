@@ -1,6 +1,6 @@
 from util.solutiontimer import time_function
 
-UPPER_BOUND = 10 ** 6
+UPPER_BOUND = 10 ** 7
 FIRST_REVERSIBLE_NUMBER = 12
 
 
@@ -48,8 +48,32 @@ class NaiveReversibleCounter(ReversibleCounter):
         return count
 
 
+class SkipNumbersWhereSumHasEvenNumberInOnesPlace(ReversibleCounter):
+    def count(self):
+        def naive_check(n):
+            reversed_number = reverse_number(n)
+            return sum_contains_all_odd_digits(n, reversed_number)
+
+        count = 0
+        i = FIRST_REVERSIBLE_NUMBER
+        group_ceiling = 100
+        while i < self._upper_bound:
+            if i % 10 == 0:
+                i += 2
+
+            if naive_check(i):
+                count += 1
+
+            i += 2
+            if i >= group_ceiling:
+                i += 1
+                group_ceiling *= 10
+
+        return count * 2
+
+
 def main():
-    reversible_counter = NaiveReversibleCounter(UPPER_BOUND)
+    reversible_counter = SkipNumbersWhereSumHasEvenNumberInOnesPlace(UPPER_BOUND)
     reversible_numbers = reversible_counter.count()
 
     print 'Found {} reversible numbers below {}'.format(reversible_numbers, UPPER_BOUND)
