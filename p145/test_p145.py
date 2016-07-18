@@ -2,7 +2,7 @@ import unittest
 
 from assertpy import assert_that
 
-from p145.p145_solution import reverse_number, naive_check, sum_contains_all_odd_digits, pivot_check, is_even
+from p145.p145_solution import reverse_number, naive_checker, sum_contains_all_odd_digits, pivot_check, is_even
 
 
 class P145Test(unittest.TestCase):
@@ -19,19 +19,18 @@ class P145Test(unittest.TestCase):
         assert_that(sum_contains_all_odd_digits(11, 21)).is_false()
 
     def test_is_reversible_on_reversible_number_returns_true(self):
-        assert_that(naive_check(36)).is_true()
+        assert_that(naive_checker(36)).is_true()
 
     def test_is_reversible_on_non_reversible_number_returns_false(self):
-        assert_that(naive_check(123)).is_false()
+        assert_that(naive_checker(123)).is_false()
 
     def test_is_even_returns_true_on_even_number(self):
         assert_that(is_even(2)).is_true()
 
 
 class PivotCheckTest(unittest.TestCase):
-    def test_pivot_check_raises_exception_if_length_of_number_is_even(self):
-        with self.assertRaises(Exception):
-            pivot_check(12)
+    def test_pivot_check_returns_true_if_length_of_number_is_even(self):
+        assert_that(pivot_check(12)).is_true()
 
     def test_pivot_returns_false_if_sum_of_preceding_digits_does_not_have_carry(self):
         assert_that(pivot_check(102)).is_false()

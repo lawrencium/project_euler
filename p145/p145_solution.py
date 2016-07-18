@@ -2,7 +2,7 @@ import math
 
 from util.solutiontimer import time_function
 
-UPPER_BOUND = 10 ** 7
+UPPER_BOUND = 10 ** 9
 FIRST_REVERSIBLE_NUMBER = 12
 
 
@@ -27,7 +27,7 @@ def sum_contains_all_odd_digits(n1, n2):
     return check_digits_are_odd(n1 + n2)
 
 
-def naive_check(n):
+def naive_checker(n):
     reversed_number = reverse_number(n)
     return sum_contains_all_odd_digits(n, reversed_number)
 
@@ -36,7 +36,7 @@ def pivot_check(n):
     n_string = str(n)
     number_digits = len(n_string)
     if is_even(number_digits):
-        raise Exception('Can only check pivot on odd-length numbers. Got {}'.format(n))
+        return True
 
     mid_point_index = number_digits / 2
 
@@ -58,9 +58,17 @@ def pivot_check(n):
     return True
 
 
+def hybrid_checker(n):
+    if pivot_check(n):
+        return naive_checker(n)
+    else:
+        return False
+
+
 class ReversibleCounter:
-    def __init__(self, upper_bound):
+    def __init__(self, upper_bound, reversibility_checker):
         self._upper_bound = upper_bound
+        self._reversibility_checker = reversibility_checker
 
     # noinspection PyMethodMayBeStatic
     def count(self):
@@ -75,7 +83,7 @@ class NaiveReversibleCounter(ReversibleCounter):
             if i % 10 == 0:
                 continue
 
-            if naive_check(i):
+            if self._reversibility_checker(i):
                 count += 1
 
         return count
@@ -90,7 +98,7 @@ class SkipNumbersWhereSumHasEvenNumberInOnesPlace(ReversibleCounter):
             if i % 10 == 0:
                 i += 2
 
-            if naive_check(i):
+            if self._reversibility_checker(i):
                 count += 1
 
             i += 2
@@ -113,14 +121,13 @@ class GoalPostImplementation(ReversibleCounter):
                         number_to_check = last_digit + intermittent_digits * 10 + first_digit * 10 ** (
                             number_digits_between_first_and_last_digit + 1)
 
-                        if naive_check(number_to_check):
-                            # print number_to_check
+                        if naive_checker(number_to_check):
                             count += 1
         return count * 2
 
 
 def main():
-    reversible_counter = GoalPostImplementation(UPPER_BOUND)
+    reversible_counter = GoalPostImplementation(UPPER_BOUND, naive_checker)
     reversible_numbers = reversible_counter.count()
 
     print 'Found {} reversible numbers below {}'.format(reversible_numbers, UPPER_BOUND)
