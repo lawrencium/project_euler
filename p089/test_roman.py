@@ -21,8 +21,15 @@ class CompressionTest(unittest.TestCase):
     def test_compressor_returns_original_numeral_if_repeating_character_is_M(self):
         assert_that(compress('MMMMXXX')).is_equal_to('MMMMXXX')
 
-        # def test_compressor_does_not_violate_uniqueness_constraint_on_some_characters_when_compressing(self):
-        #     assert_that(compress('LXXXX')).is_equal_to('XC')
+    def test_compressor_does_not_violate_uniqueness_constraint_on_some_characters_when_compressing(self):
+        assert_that(compress('LXXXX')).is_equal_to('XC')
+
+    def test_compressor_recurses_if_multiple_substitutions_are_available(self):
+        assert_that(compress('XXXXVIIII')).is_equal_to('XLIX')
+
+    def test_compressor_on_arbitrary_input(self):
+        assert_that(compress('MCCLXXVIIII')).is_equal_to('MCCLXXIX')
+
 
 
 class ConsecutiveOccurrenceTest(unittest.TestCase):
