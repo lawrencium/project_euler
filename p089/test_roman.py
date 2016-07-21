@@ -15,6 +15,9 @@ class CompressionTest(unittest.TestCase):
     def test_compressor_returns_original_numeral_if_no_character_appears_four_consecutive_times(self):
         assert_that(compress('MMLIII')).is_equal_to('MMLIII')
 
+    def test_compressor_returns_two_chracter_substitute_on_string_with_four_consecutive_repeats(self):
+        assert_that(compress('XXXX')).is_equal_to('XL')
+
 
 class ConsecutiveOccurrenceTest(unittest.TestCase):
     def test_returns_negative_one_if_string_less_than_n_occurrences(self):
