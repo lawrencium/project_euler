@@ -58,8 +58,3 @@ def replace_consecutive_occurrences(index, roman_numeral):
     else:
         substring_replacement = repeating_character + hierarchical_replacement
         return handle_replacement(index, MINIMUM_CONSECUTIVE_OCCURRENCE_FOR_COMPRESSION, substring_replacement)
-
-        # substring_replacement = repeating_character + CLASSIC_ROMAN_NUMERAL_HIERARCHY[
-        #     hierarchical_replacement] if hierarchical_replacement in roman_numeral else repeating_character + hierarchical_replacement
-        # return roman_numeral.replace(repeating_character * MINIMUM_CONSECUTIVE_OCCURRENCE_FOR_COMPRESSION,
-        #                              substring_replacement, 1)
