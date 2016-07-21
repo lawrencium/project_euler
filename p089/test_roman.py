@@ -18,6 +18,12 @@ class CompressionTest(unittest.TestCase):
     def test_compressor_returns_two_chracter_substitute_on_string_with_four_consecutive_repeats(self):
         assert_that(compress('XXXX')).is_equal_to('XL')
 
+    def test_compressor_returns_original_numeral_if_repeating_character_is_M(self):
+        assert_that(compress('MMMMXXX')).is_equal_to('MMMMXXX')
+
+        # def test_compressor_does_not_violate_uniqueness_constraint_on_some_characters_when_compressing(self):
+        #     assert_that(compress('LXXXX')).is_equal_to('XC')
+
 
 class ConsecutiveOccurrenceTest(unittest.TestCase):
     def test_returns_negative_one_if_string_less_than_n_occurrences(self):
