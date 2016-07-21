@@ -13,5 +13,12 @@ class RomanNumeralTransformer(object):
     def __init__(self, mapping):
         self._mapping = mapping
 
+    def __sum_roman_numerals(self, numerals):
+        roman_numeral_sum = 0
+        for numeral in numerals:
+            roman_numeral_sum += self._mapping[numeral]
+
+        return roman_numeral_sum
+
     def to_arabic_representation(self, roman_numeral):
-        return self._mapping[roman_numeral]
+        return self.__sum_roman_numerals(roman_numeral)
