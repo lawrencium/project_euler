@@ -2,15 +2,26 @@ import unittest
 
 from assertpy import assert_that
 
-from p089.roman import RomanNumeralTransformer, CLASSIC_ROMAN_NUMERAL_MAPPING
+from p089.roman import compress, starting_index_of_n_consecutive_occurrences
 
 
-class ArabicTransformationTest(unittest.TestCase):
-    def setUp(self):
-        self.transformer = RomanNumeralTransformer(CLASSIC_ROMAN_NUMERAL_MAPPING)
+class CompressionTest(unittest.TestCase):
+    def test_compressor_returns_original_numeral_on_strings_less_than_four_characters(self):
+        assert_that(compress('III')).is_equal_to('III')
 
-    def test_transformer_returns_correct_integer_for_single_character_roman_numeral(self):
-        assert_that(self.transformer.to_arabic_representation('I')).is_equal_to(1)
+    def test_compressor_returns_original_numeral_if_all_characters_are_M(self):
+        assert_that(compress('MMMM')).is_equal_to('MMMM')
 
-    def test_transformer_returns_correct_integer_for_multiple_chracter_numeral_with_no_subtraction(self):
-        assert_that(self.transformer.to_arabic_representation('XVI')).is_equal_to(16)
+    def test_compressor_returns_original_numeral_if_no_character_appears_four_consecutive_times(self):
+        assert_that(compress('MMLIII')).is_equal_to('MMLIII')
+
+
+class ConsecutiveOccurrenceTest(unittest.TestCase):
+    def test_returns_negative_one_if_string_less_than_n_occurrences(self):
+        assert_that(starting_index_of_n_consecutive_occurrences('III', 4)).is_equal_to(-1)
+
+    def test_returns_index_of_start_of_occurrence_if_sequence_contains_consecutive_occurrence(self):
+        assert_that(starting_index_of_n_consecutive_occurrences('II', 2)).is_equal_to(0)
+
+    def test_returns_negative_one_if_string_does_not_contain_occurrence(self):
+        assert_that(starting_index_of_n_consecutive_occurrences('IVI', 2)).is_equal_to(-1)
