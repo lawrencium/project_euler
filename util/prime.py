@@ -23,6 +23,40 @@ def sieve_of_eratosthenes(n):
     return [2] + [2 * i + 1 for i in xrange(1, len(sieve)) if sieve[i]]
 
 
+def get_factorization(n, factors):
+    """
+    returns factorization of n in key value pairs (k,v) where is the factor and v is its multiplicity
+
+    For example, prime_factorization(12, prime_numbers_up_to_5) = {2:2, 3:1}
+    :param n: number to take prime factorization of
+    :param factors: a list of factors to decompose n into -- it is required that the list of factors be sorted
+    :return: dictionary representing prime factorization
+    """
+
+    def get_multiplicity(number, factor):
+        count = 0
+        while number % factor == 0:
+            number /= factor
+            count += 1
+        return count
+
+    last_prime = factors[-1]
+
+    if n == last_prime:
+        return {n: 1}
+
+    factorization = {}
+    upper_bound = int(math.sqrt(n)) + 1
+    for prime in factors:
+        if prime > upper_bound:
+            break
+        if n % prime == 0:
+            multiplicity = get_multiplicity(n, prime)
+            factorization[prime] = multiplicity
+
+    return factorization
+
+
 def is_prime(n):
     """
     naively checks to see if number is prime
