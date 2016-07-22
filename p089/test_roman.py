@@ -31,7 +31,6 @@ class CompressionTest(unittest.TestCase):
         assert_that(compress('MCCLXXVIIII')).is_equal_to('MCCLXXIX')
 
 
-
 class ConsecutiveOccurrenceTest(unittest.TestCase):
     def test_returns_negative_one_if_string_less_than_n_occurrences(self):
         assert_that(starting_index_of_n_consecutive_occurrences('III', 4)).is_equal_to(-1)
