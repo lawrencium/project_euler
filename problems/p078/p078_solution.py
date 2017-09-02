@@ -23,7 +23,7 @@ def get_internal_permutations(remainder):
     permutations = internal_recursive_calculator(remainder)
 
     PERMUTATION_TABLE[remainder] = permutations
-    print 'internal permutations for', remainder, 'was', permutations
+    # print 'internal permutations for', remainder, 'was', permutations
     return permutations
 
 
@@ -34,12 +34,12 @@ def number_piles(n):
         return 0
 
     piles = 1
-    print n, 0
+    # print n, 0
     for starting_pile in range(1, n / 2 + 1):
         piles += 1
 
         remainder = n - starting_pile
-        print starting_pile, remainder
+        # print starting_pile, remainder
         internal_permutations = get_internal_permutations(remainder)
         piles += internal_permutations
 
