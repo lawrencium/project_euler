@@ -46,7 +46,7 @@ def get_factorization(n, factors):
         return {n: 1}
 
     factorization = {}
-    upper_bound = int(math.sqrt(n)) + 1
+    upper_bound = n / 2
     for prime in factors:
         if prime > upper_bound:
             break

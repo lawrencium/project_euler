@@ -8,7 +8,7 @@ from assertpy import assert_that
 
 class PrimeFactorizationTest(unittest.TestCase):
     def setUp(self):
-        self.sieve = sieve_of_eratosthenes(10)
+        self.sieve = sieve_of_eratosthenes(30)
 
     def test_returns_prime_factorization_on_prime_number_returns_prime_number_as_only_key(self):
         assert_that(get_factorization(3, self.sieve)).is_equal_to({3: 1})
@@ -19,3 +19,6 @@ class PrimeFactorizationTest(unittest.TestCase):
 
     def test_factorization_handles_composite_numbers_composed_of_primes_with_higher_multiplicities(self):
         assert_that(get_factorization(12, self.sieve)).is_equal_to({3: 1, 2: 2})
+
+    def test_factorization_of_composite_with_prime_that_is_half_of_number(self):
+        assert_that(get_factorization(14, self.sieve)).is_equal_to({2: 1, 7: 1})
