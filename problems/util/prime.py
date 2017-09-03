@@ -40,19 +40,24 @@ def get_factorization(n, factors):
             count += 1
         return count
 
-    last_prime = filter(lambda x: x <= n, factors)[-1]
+    upper_bound = int(math.sqrt(n)) + 1
+    if upper_bound > factors[-1]:
+        raise RuntimeError('sieve too small')
 
-    if n == last_prime:
-        return {n: 1}
-
+    number_to_decompose = n
     factorization = {}
-    upper_bound = n / 2
     for prime in factors:
         if prime > upper_bound:
             break
-        if n % prime == 0:
-            multiplicity = get_multiplicity(n, prime)
+
+        if number_to_decompose % prime == 0:
+            multiplicity = get_multiplicity(number_to_decompose, prime)
             factorization[prime] = multiplicity
+
+            number_to_decompose /= prime ** multiplicity
+
+    if number_to_decompose > 1:
+        factorization[number_to_decompose] = 1
 
     return factorization
 
