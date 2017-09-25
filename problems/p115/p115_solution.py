@@ -3,7 +3,17 @@ from problems.util.solutiontimer import time_function
 
 
 def main():
-    print BlockCombinationCounter(3, 50).count()
+    threshold = 1000000
+
+    m = 50
+    n = 50
+
+    while True:
+        if BlockCombinationCounter(m, n).count() > threshold:
+            print n
+            return
+
+        n += 1
 
 
 if __name__ == '__main__':
